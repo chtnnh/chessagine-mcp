@@ -1,9 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getKnowledgeBase } from "../tools/knowlegebase.js";
-import { PROMPT_CATEGORIES } from "../utils/utils.js";
+import { moveToFenMap, PROMPT_CATEGORIES } from "../utils/utils.js";
 import { PUZZLE_THEMES } from "../tools/puzzle.js";
 import { gamePgnSchema } from "../runner/schema.js";
 import { collectFensFromGame } from "../utils/utils.js";
+import z from "zod";
 export function registerUtilsTools(server: McpServer){
 
     server.tool(
@@ -135,5 +136,42 @@ export function registerUtilsTools(server: McpServer){
         }
       }
     );
+
+    server.tool(
+      "get-fen-map-lookup",
+      "Lookup fens for mapped SAN move, for given game PGN",
+      {
+        pgn: gamePgnSchema,
+        isAfter: z.boolean().describe("If true, maps moves to FEN after the move; if false, maps to FEN before the move")
+      },
+      async ({pgn, isAfter}) => {
+        try {
+          const fenMap = moveToFenMap(pgn, isAfter);
+    
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify({
+                  fenMap: fenMap,
+                  moveCount: Object.keys(fenMap).length,
+                  mappingType: isAfter ? "after move" : "before move"
+                }, null, 2),
+              },
+            ],
+          };
+        } catch (error) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error generating move-to-FEN map: ${error}`,
+              },
+            ],
+          };
+        }
+      }
+    );
+
 
 }

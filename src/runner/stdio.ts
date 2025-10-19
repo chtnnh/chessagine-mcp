@@ -4,15 +4,27 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { server } from "./server.js";
 import { registerAgine } from "../mcp/registerAgine.js";
 
-// Main function to run the server
+
 async function main() {
-  const transport = new StdioServerTransport();
-  registerAgine(server);
-  await server.connect(transport);
-  console.error("ChessAgine MCP Server running on stdio");
+  try {
+   
+    const transport = new StdioServerTransport();
+    registerAgine(server);
+    await server.connect(transport);
+    console.error("ChessAgine MCP Server running on stdio");
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
 }
 
-main().catch((error) => {
+process.on('unhandledRejection', async (reason) => {
+  console.error('Unhandled rejection:', reason);
+  process.exit(1);
+});
+
+main().catch(async (error) => {
   console.error("Fatal error in main():", error);
+
   process.exit(1);
 });

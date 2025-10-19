@@ -102,6 +102,19 @@ export function collectFensFromGame(pgn) {
     }
     return fens;
 }
+export function moveToFenMap(pgn, isAfter) {
+    const fenMap = {};
+    const chess = new Chess();
+    chess.loadPgn(pgn);
+    const history = chess.history({ verbose: true });
+    for (let i = 0; i < history.length; i++) {
+        if (isAfter) {
+            fenMap[`${history[i].san}`] = history[i].after;
+        }
+        fenMap[`${history[i].san}`] = history[i].before;
+    }
+    return fenMap;
+}
 export function validColorSchema(color) {
     if (color === "white")
         return "w";

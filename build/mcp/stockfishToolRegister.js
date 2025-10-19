@@ -1,65 +1,6 @@
-import { fenSchema, engineDepthSchema, moveSchema } from "../runner/schema.js";
-import { calculateDeep } from "../themes/state.js";
-import { getChessEvaluation, generateChessAnalysis } from "../tools/fish.js";
-import { getChessDbNoteWord, validateEngineDepth } from "../utils/utils.js";
-export function registerStockfishTools(server) {
-    server.tool("get-stockfish-analysis", "Analyze a given chess position using Stockfish and provide best move, reasoning, and variation, speech Eval and number Eval", {
-        fen: fenSchema,
-        depth: engineDepthSchema,
-    }, async ({ fen, depth }) => {
-        try {
-            const validDepth = validateEngineDepth(depth);
-            const evaluation = await getChessEvaluation(fen, validDepth);
-            const result = generateChessAnalysis(evaluation, fen);
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(result, null, 2),
-                    },
-                ],
-            };
-        }
-        catch (error) {
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: `Error getting Stockfish analysis:`,
-                    },
-                ],
-            };
-        }
-    });
-    server.tool("get-stockfish-move-analysis", "Analyze a given chess position after a specific move using Stockfish and provide best move, reasoning, variation, speech eval, and number eval", {
-        fen: fenSchema,
-        move: moveSchema,
-    }, async ({ fen, move }) => {
-        try {
-            // calculateDeep returns the new FEN after the move
-            const newFen = calculateDeep(fen, move)?.fen || fen;
-            const evaluation = await getChessEvaluation(newFen, 15);
-            const result = generateChessAnalysis(evaluation, newFen);
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(result, null, 2),
-                    },
-                ],
-            };
-        }
-        catch (error) {
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: `Error getting Stockfish move analysis:`,
-                    },
-                ],
-            };
-        }
-    });
+import { fenSchema, } from "../runner/schema.js";
+import { getChessDbNoteWord, } from "../utils/utils.js";
+export function registerChessDBTools(server) {
     server.tool("get-chessdb-analysis", "Fetch position analysis and candidate moves from ChessDB", {
         fen: fenSchema,
     }, async ({ fen }) => {
@@ -70,7 +11,7 @@ export function registerStockfishTools(server) {
             return {
                 content: [
                     {
-                        type: "text",
+                        type: "text", // 
                         text: `HTTP ${response.status}: Failed to fetch ChessDB data`,
                     },
                 ],
@@ -104,7 +45,11 @@ export function registerStockfishTools(server) {
             return {
                 uci: move.uci || "N/A",
                 san: move.san || "N/A",
-                score: scoreStr,
+                score: scoreStr, // need to take a look at score 
+                /**
+                 * TODO fix this
+                 * It just gets confused as black sometimes because ChessDB by default shows scores with negative being bad for the side to move rather than always from the perspective of white
+                 */
                 winrate: move.winrate || "N/A",
                 rank: move.rank,
                 note: getChessDbNoteWord(move.note?.split(" ")[0] || ""),

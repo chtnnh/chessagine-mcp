@@ -1,8 +1,8 @@
 {
   "manifest_version": "0.2",
-  "name": "chessagine-mcp-v0.3",
-  "version": "1.0.5",
-  "description": "Connect to ChessAgine Chess Context Protocol tools, access to stockfish, chess board state, analysis of themes making LLM more chess aware, get access to chessdb, and lichess games.",
+  "name": "chessagine-mcp-v0.3.1",
+  "version": "1.0.6",
+  "description": "Connect to ChessAgine Chess Context Protocol tools, access to stockfish analysis, chess board state, analysis of themes making LLM more chess aware, get access to chessdb, and lichess games.",
   "author": {
     "name": "Jalp",
     "url": "https://github.com/jalpp"
@@ -51,8 +51,8 @@
       "description": "Perform deep Stockfish engine analysis of any chess position, providing best moves, evaluation scores, principal variations, and strategic reasoning."
     },
     {
-      "name": "get-stockfish-move-analysis", 
-      "description": "Analyze a chess position after playing a specific move, showing the resulting evaluation and best continuations using Stockfish engine."
+      "name": "get-best-move", 
+      "description": "Analyze a position and get best move"
     },
     {
       "name": "is-legal-move",

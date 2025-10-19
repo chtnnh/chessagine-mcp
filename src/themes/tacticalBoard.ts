@@ -345,7 +345,7 @@ export class TacticalBoard {
 
           const pieceDescription = `${this.getColor(colour)} ${this.getPieceMap(piece)}`;
 
-          if (attackers > defenders && defenders === 0) {
+          if (attackers > defenders && defenders === 0) { // need to add threats attacker lower piece value attacking higher piece
             this.hangingPieceDescriptions.push(pieceDescription);
             this.hangingPieceCoordinates.push(coord);
           } else if (attackers === defenders && attackers > 0) {

@@ -284,7 +284,7 @@ export class TacticalBoard {
                     const ycoord = String.fromCharCode((7 - y) + '1'.charCodeAt(0));
                     const coord = `${xcoord}${ycoord}`;
                     const pieceDescription = `${this.getColor(colour)} ${this.getPieceMap(piece)}`;
-                    if (attackers > defenders && defenders === 0) {
+                    if (attackers > defenders && defenders === 0) { // need to add threats attacker lower piece value attacking higher piece
                         this.hangingPieceDescriptions.push(pieceDescription);
                         this.hangingPieceCoordinates.push(coord);
                     }
