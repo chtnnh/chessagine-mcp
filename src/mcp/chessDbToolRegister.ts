@@ -55,7 +55,7 @@ export function registerChessDBTools(server: McpServer): void {
           const scoreNum = Number(move.score);
           const fixedNote = getChessDbNoteWord(move.note?.split(" ")[0] || "");
           const turn = new Chess(fen).turn();
-          const normalizedScore = normalizeChessDBScore(scoreNum, fixedNote, turn);
+          const normalizedScore = normalizeChessDBScore(scoreNum, turn);
           const scoreStr = isNaN(normalizedScore) ? "N/A" : (normalizedScore / 100).toFixed(2);
           
           return {
@@ -64,7 +64,7 @@ export function registerChessDBTools(server: McpServer): void {
             score: scoreStr, 
             winrate: move.winrate || "N/A",
             rank: move.rank,
-            note: getChessDbNoteWord(move.note?.split(" ")[0] || ""),
+            note: fixedNote,
           };
         });
         

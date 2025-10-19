@@ -96,41 +96,15 @@ export function getChessDbNoteWord(note: string): string {
   }
 }
 
-/**
- * if note is good for black and its black's turn 
-score = -score (black better)
-if note is bad for black and its black's turn
-score = +score (white better)
-	
 
-if note is good for white and its white turn
-score = +score (white is better)
+export function normalizeChessDBScore(score: number, turn: Color): number{
 
-if note is bad for white and its white turn
-score = -score (black is better)
- * @param score 
- * @param note 
- * @param turn 
- */
-export function normalizeChessDBScore(score: number, note: string, turn: Color): number{
-
-  if(note === "Good" || note === "Best" && turn === "b"){
-     return -Math.abs(score);
+  if(turn === "b"){
+    return -score;
   }
 
-  if(note === "Bad" || note === "unknown" && turn === "b"){
-    return Math.abs(score);
-  }
-
-  if(note === "Good" || note === "Best" && turn === "w"){
-    return Math.abs(score);
-  }
-
-  if(note === "Bad" || note === "unknown" && turn === "w"){
-    return -Math.abs(score)
-  }
-
-  return Math.abs(score);
+  return score;
+  
 }
 
 export function collectFensFromGame(pgn: string): string[]{
