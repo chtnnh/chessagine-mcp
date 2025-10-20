@@ -92,6 +92,12 @@ export function getChessDbNoteWord(note) {
             return "unknown";
     }
 }
+export function normalizeChessDBScore(score, turn) {
+    if (turn === "b") {
+        return -score;
+    }
+    return score;
+}
 export function collectFensFromGame(pgn) {
     const fens = [];
     const chess = new Chess();
@@ -127,8 +133,11 @@ export function validColorSchema(color) {
     return "w";
 }
 export function validateEngineDepth(depth) {
-    if (depth < 12 || depth > 15) {
-        return 15;
+    if (depth < 12) {
+        return 12;
+    }
+    if (depth > 30) {
+        return 30;
     }
     return depth;
 }

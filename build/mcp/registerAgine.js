@@ -5,7 +5,7 @@ import { registerStateTools } from "./stateToolRegister.js";
 import { registerThemeCalculationTools } from "./themeToolRegister.js";
 import { registerUtilsTools } from "./utilToolRegister.js";
 import { registerLocalStockfishTools } from "./stockfishServerRegister.js";
-import { registerChessDBTools } from "./stockfishToolRegister.js";
+import { registerChessDBTools } from "./chessDbToolRegister.js";
 export function registerAgine(server) {
     registerAgineSystemPrompt(server);
     registerLichessTools(server);

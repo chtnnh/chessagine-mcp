@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { fenSchema } from "../runner/schema.js";
 import z from "zod";
+import axios from "axios";
 import {
   getOpeningStats,
   getOpeningStatSpeech,
@@ -12,6 +13,9 @@ import {
   getThemeDescriptions,
 } from "../tools/puzzle.js";
 
+// Get token from environment variable
+const LICHESS_STUDY_TOKEN = process.env.LICHESS_API_TOKEN || "";
+const LICHESS_USERNAME = process.env.LICHESS_USERNAME || "";
 
 export function registerLichessTools(server: McpServer): void {
   server.tool(
@@ -362,6 +366,262 @@ export function registerLichessTools(server: McpServer): void {
             {
               type: "text",
               text: `Error fetching puzzle: ${error}`,
+            },
+          ],
+        };
+      }
+    }
+  );
+
+  server.tool(
+    "get-lichess-username",
+    "Get the lichess username of current mcp user",
+    {
+    },
+    async () => {
+      
+      let username = LICHESS_USERNAME;
+
+      if(!username || username === ""){
+        return {
+          content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              {
+                username: "Not Found",
+              },
+              null,
+              2
+            ),
+          },
+        ],
+        }
+      }
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              {
+                username: username,
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+  );
+
+  // NEW: Fetch user's studies
+  server.tool(
+    "fetch-lichess-studies",
+    "Fetch all studies for a given Lichess user. Returns a list of studies with their IDs, names, and timestamps. Requires either LICHESS_STUDY_TOKEN environment variable or token parameter.",
+    {
+      username: z
+        .string()
+        .describe("Lichess username to fetch studies for"),
+      token: z
+        .string()
+        .optional()
+        .describe("Lichess API token (optional if LICHESS_STUDY_TOKEN env var is set)"),
+    },
+    async ({ username, token }) => {
+      try {
+        const authToken = token || LICHESS_STUDY_TOKEN;
+        if (!authToken) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: "Error: LICHESS_STUDY_TOKEN environment variable is not set. Please configure it to access Lichess studies.",
+              },
+            ],
+          };
+        }
+
+        const response = await fetch(
+          `https://lichess.org/api/study/by/${username}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              Accept: "application/x-ndjson",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "Error: Invalid or expired LICHESS_STUDY_TOKEN. Please check your authentication token.",
+                },
+              ],
+            };
+          }
+          if (response.status === 404) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `User "${username}" not found on Lichess.`,
+                },
+              ],
+            };
+          }
+          throw new Error(`Failed to fetch studies: ${response.statusText}`);
+        }
+
+        const rawData = await response.text();
+        const studies = rawData
+          .split("\n")
+          .filter(Boolean)
+          .map((line) => JSON.parse(line));
+
+        if (studies.length === 0) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `No studies found for user "${username}".`,
+              },
+            ],
+          };
+        }
+
+        const formattedStudies = studies
+          .map((study, index) => {
+            const created = new Date(study.createdAt).toLocaleString();
+            const updated = new Date(study.updatedAt).toLocaleString();
+
+            return `Study ${index + 1}:
+- ID: ${study.id}
+- Name: ${study.name}
+- Created: ${created}
+- Updated: ${updated}`;
+          })
+          .join("\n\n");
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Found ${studies.length} studies for "${username}":\n\n${formattedStudies}`,
+            },
+            {
+              type: "text",
+              text: JSON.stringify(studies, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error fetching studies: ${
+                error instanceof Error ? error.message : String(error)
+              }`,
+            },
+          ],
+        };
+      }
+    }
+  );
+
+  // NEW: Fetch specific study PGN
+  server.tool(
+    "fetch-lichess-study-pgn",
+    "Fetch a specific Lichess study in PGN format. Returns all chapters of the study as PGN. Requires either LICHESS_STUDY_TOKEN environment variable or token parameter.",
+    {
+      studyId: z
+        .string()
+        .describe(
+          "Lichess study ID (e.g., WTvnkWAL from https://lichess.org/study/WTvnkWAL)"
+        ),
+
+    },
+    async ({ studyId}) => {
+      try {
+        const authToken = LICHESS_STUDY_TOKEN;
+        if (!authToken) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: "Error: LICHESS_STUDY_TOKEN environment variable is not set. Please configure it to access Lichess studies.",
+              },
+            ],
+          };
+        }
+
+        const response = await axios.get(
+          `https://lichess.org/api/study/${studyId}.pgn`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+
+        const pgnText = response.data;
+
+        if (!pgnText || typeof pgnText !== "string" || pgnText.trim() === "") {
+          throw new Error("Empty PGN received from Lichess");
+        }
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Successfully fetched study ${studyId}:\n\n${pgnText}`,
+            },
+          ],
+        };
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 401) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "Error: Invalid or expired LICHESS_STUDY_TOKEN. Please check your authentication token.",
+                },
+              ],
+            };
+          }
+          if (error.response?.status === 404) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `Study "${studyId}" not found on Lichess. Please verify the study ID.`,
+                },
+              ],
+            };
+          }
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error fetching study PGN: ${error.response?.status} ${error.response?.statusText}`,
+              },
+            ],
+          };
+        }
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error fetching study PGN: ${
+                error instanceof Error ? error.message : String(error)
+              }`,
             },
           ],
         };

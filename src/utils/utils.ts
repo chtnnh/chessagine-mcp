@@ -1,4 +1,4 @@
-import { Chess } from "chess.js";
+import { Chess, Color } from "chess.js";
 
 export  const PROMPT_CATEGORIES = {
   quickPosition: {
@@ -96,6 +96,17 @@ export function getChessDbNoteWord(note: string): string {
   }
 }
 
+
+export function normalizeChessDBScore(score: number, turn: Color): number{
+
+  if(turn === "b"){
+    return -score;
+  }
+
+  return score;
+  
+}
+
 export function collectFensFromGame(pgn: string): string[]{
   const fens: string[] = [];
 
@@ -143,8 +154,12 @@ export function validColorSchema(color: string): string {
 }
 
 export function validateEngineDepth(depth: number): number {
-  if(depth < 12 || depth > 15){
-     return 15;
+  if(depth < 12){
+    return 12;
+  }
+
+  if(depth > 30){
+    return 30;
   }
 
   return depth;

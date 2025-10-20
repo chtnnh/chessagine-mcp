@@ -1,10 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { fenSchema, } from "../runner/schema.js";
-import { getChessDbNoteWord, } from "../utils/utils.js";
+import { getChessDbNoteWord, normalizeChessDBScore, } from "../utils/utils.js";
+import { Chess } from "chess.js";
 
 export function registerChessDBTools(server: McpServer): void {
     
-
     server.tool(
       "get-chessdb-analysis",
       "Fetch position analysis and candidate moves from ChessDB",
@@ -53,19 +53,18 @@ export function registerChessDBTools(server: McpServer): void {
         
         const processedMoves = moves.map((move: any) => {
           const scoreNum = Number(move.score);
-          const scoreStr = isNaN(scoreNum) ? "N/A" : (scoreNum / 100).toFixed(2);
+          const fixedNote = getChessDbNoteWord(move.note?.split(" ")[0] || "");
+          const turn = new Chess(fen).turn();
+          const normalizedScore = normalizeChessDBScore(scoreNum, turn);
+          const scoreStr = isNaN(normalizedScore) ? "N/A" : (normalizedScore / 100).toFixed(2);
           
           return {
             uci: move.uci || "N/A",
             san: move.san || "N/A", 
-            score: scoreStr, // need to take a look at score 
-            /**
-             * TODO fix this
-             * It just gets confused as black sometimes because ChessDB by default shows scores with negative being bad for the side to move rather than always from the perspective of white
-             */
+            score: scoreStr, 
             winrate: move.winrate || "N/A",
             rank: move.rank,
-            note: getChessDbNoteWord(move.note?.split(" ")[0] || ""),
+            note: fixedNote,
           };
         });
         
