@@ -7,17 +7,36 @@ export function getSidePositionalCount(chess: Chess, side: Color): PositionalPaw
   const isolatedPawnCount = getSideIsolatedPawnCount(pawnSquares);
   const backwardPawnCount = getSideBackwardPawnCount(chess, pawnSquares, side);
   const passedPawnCount = getPassedPawnCount(chess, side);
-  const totalPawns = pawnSquares.length;
-  const weaknessScore = totalPawns > 0 
-    ? Math.round(((doublePawns + isolatedPawnCount + backwardPawnCount) / totalPawns) * 100) 
-    : 0;
+  
+  // Get enemy's pawn weaknesses for comparison
+  const enemySide = side === WHITE ? BLACK : WHITE;
+  const enemyPawnSquares = chess.findPiece({type: PAWN, color: enemySide});
+  const enemyDoublePawns = getDoublePawnCount(enemyPawnSquares);
+  const enemyIsolatedPawnCount = getSideIsolatedPawnCount(enemyPawnSquares);
+  const enemyBackwardPawnCount = getSideBackwardPawnCount(chess, enemyPawnSquares, enemySide);
+  const enemyPassedPawnCount = getPassedPawnCount(chess, enemySide);
+  
+  // Calculate raw weakness/strength scores
+  // Weaknesses are negative, strengths are positive
+  const ourWeaknesses = doublePawns + isolatedPawnCount + backwardPawnCount;
+  const ourStrengths = passedPawnCount * 3; // Passed pawns are very valuable
+  const ourScore = ourStrengths - ourWeaknesses;
+  
+  const enemyWeaknesses = enemyDoublePawns + enemyIsolatedPawnCount + enemyBackwardPawnCount;
+  const enemyStrengths = enemyPassedPawnCount * 3;
+  const enemyScore = enemyStrengths - enemyWeaknesses;
+  
+  // Positional advantage: our score minus enemy score
+  // Positive = we have better pawn structure
+  // Negative = enemy has better pawn structure
+  const positionalAdvantage = ourScore - enemyScore;
 
   return {
     doublepawncount: doublePawns,
     isolatedpawncount: isolatedPawnCount,
     backwardpawncount: backwardPawnCount,
     passedpawncount: passedPawnCount,
-    weaknessscore: weaknessScore,
+    positionalAdvatange: positionalAdvantage, // This is now a comparative advantage score
   };
 }
 
@@ -31,22 +50,23 @@ function getPassedPawnCount(chess: Chess, side: Color): number {
   for (const pawnSquare of myPawns) {
     const file = pawnSquare[0];
     const rank = parseInt(pawnSquare[1]);
-  
+    
     let isPassed = true;
     
-    
+    // Check if any enemy pawns block this pawn's path or can capture it
     for (const enemyPawn of enemyPawns) {
       const enemyFile = enemyPawn[0];
       const enemyRank = parseInt(enemyPawn[1]);
       
-      
+      // Check same file and adjacent files (capture squares)
       const fileDiff = Math.abs(enemyFile.charCodeAt(0) - file.charCodeAt(0));
       if (fileDiff <= 1) {
+        // For white pawns, enemy pawns ahead block the path
         if (side === WHITE && enemyRank > rank) {
           isPassed = false;
           break;
         }
-          
+        // For black pawns, enemy pawns behind (lower rank) block the path  
         else if (side === BLACK && enemyRank < rank) {
           isPassed = false;
           break;

@@ -1,9 +1,8 @@
-import { getBoardState } from "../themes/state.js";
+import { getBoardState, calculateDeep } from "../protocol/state.js";
 import z from "zod";
 import { fenSchema } from "../runner/schema.js";
 import { moveSchema } from "../runner/schema.js";
-import { calculateDeep } from "../themes/state.js";
-import { PositionPrompter } from "../themes/positionPrompter.js";
+import { PositionPrompter } from "../protocol/positionPrompter.js";
 export function registerStateTools(server) {
     server.tool("is-legal-move", "Check if a given move is legal for the provided FEN position", {
         fen: z.string().describe("FEN string representing the board position, the fen must be in full form containing which side to move"),

@@ -1,4 +1,4 @@
-import { Chess, QUEEN, ROOK, BISHOP, KNIGHT } from "chess.js";
+import { Chess, WHITE, BLACK, QUEEN, ROOK, BISHOP, KNIGHT } from "chess.js";
 import { getPiecePlacement } from "./piecePlacement.js";
 function getSidePieces(chess, side) {
     const pieces = getPiecePlacement(chess, side);
@@ -13,6 +13,23 @@ function getSidePieces(chess, side) {
 }
 export function getPieceMobility(fen, side) {
     const chess = new Chess(fen);
+    // Calculate mobility for the requested side
+    const ourMobility = calculateMobilityForSide(chess, fen, side);
+    // Calculate mobility for opponent side
+    const enemySide = side === WHITE ? BLACK : WHITE;
+    const enemyMobility = calculateMobilityForSide(chess, fen, enemySide);
+    // Mobility advantage: positive = we have more mobility, negative = opponent has more
+    const mobilityAdvantage = ourMobility.totalmobility - enemyMobility.totalmobility;
+    return {
+        queenmobility: ourMobility.queenmobility,
+        rookmobility: ourMobility.rookmobility,
+        bishopmobility: ourMobility.bishopmobility,
+        knightmobility: ourMobility.knightmobility,
+        totalmobility: ourMobility.totalmobility,
+        mobilityadvantage: mobilityAdvantage // Add this new field
+    };
+}
+function calculateMobilityForSide(chess, fen, side) {
     const originalTurn = chess.turn();
     // If the turn is not the side we're analyzing, temporarily set it
     if (originalTurn !== side) {
@@ -42,6 +59,12 @@ export function getPieceMobility(fen, side) {
                 knightMobility += mobility;
                 break;
         }
+    }
+    // Restore original turn if we changed it
+    if (originalTurn !== side) {
+        const fenParts = fen.split(' ');
+        fenParts[1] = originalTurn;
+        chess.load(fenParts.join(' '));
     }
     return {
         queenmobility: queenMobility,

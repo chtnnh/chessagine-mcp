@@ -1,5 +1,5 @@
 import { Chess } from "chess.js";
-import { PositionScorer } from "../themes/positionScorer.js";
+import { PositionScorer } from "../protocol/positionScorer.js";
 import { STATE_THEMES } from "../types/types.js";
 function collectFenList(rootFen, moves) {
     const collectedFen = [];
@@ -19,8 +19,11 @@ export function getThemeScores(fen, color) {
         material: scorer.getThemeScore(STATE_THEMES.MATERIAL),
         mobility: scorer.getThemeScore(STATE_THEMES.MOBILITY),
         space: scorer.getThemeScore(STATE_THEMES.SPACE),
-        pawnStructure: scorer.getThemeScore(STATE_THEMES.POSITIONAL),
-        kingSafety: scorer.getThemeScore(STATE_THEMES.KING_SAFETY)
+        positional: scorer.getThemeScore(STATE_THEMES.POSITIONAL),
+        kingSafety: scorer.getThemeScore(STATE_THEMES.KING_SAFETY),
+        tactical: scorer.getThemeScore(STATE_THEMES.TACTICAL),
+        darksqaureControl: scorer.getThemeScore(STATE_THEMES.SQAURE_CONTROL_DARK),
+        lightsqaureControl: scorer.getThemeScore(STATE_THEMES.SQAURE_CONTROL_LIGHT)
     };
 }
 export function analyzeVariationThemes(rootFen, moves, color) {
@@ -38,7 +41,7 @@ export function analyzeVariationThemes(rootFen, moves, color) {
     const moveByMoveScores = fens.map(fen => getThemeScores(fen, color));
     const initialScores = moveByMoveScores[0];
     const finalScores = moveByMoveScores[moveByMoveScores.length - 1];
-    const themeNames = ['material', 'mobility', 'space', 'pawnStructure', 'kingSafety'];
+    const themeNames = ['material', 'mobility', 'space', 'positional', 'kingSafety', 'tactical', 'darksqaureControl', 'lightsqaureControl'];
     const themeChanges = themeNames.map(theme => {
         const initial = initialScores[theme];
         const final = finalScores[theme];
@@ -88,7 +91,7 @@ export function findCriticalMoments(rootFen, moves, color, threshold = 0.5) {
     for (let i = 1; i < fens.length; i++) {
         const previousScores = getThemeScores(fens[i - 1], color);
         const currentScores = getThemeScores(fens[i], color);
-        const themeNames = ['material', 'mobility', 'space', 'pawnStructure', 'kingSafety'];
+        const themeNames = ['material', 'mobility', 'space', 'positional', 'kingSafety', 'tactical', 'tactical', 'darksqaureControl', 'lightsqaureControl'];
         const moveThemeChanges = themeNames.map(theme => {
             const initial = previousScores[theme];
             const final = currentScores[theme];

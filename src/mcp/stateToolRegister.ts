@@ -1,10 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getBoardState } from "../themes/state.js";
+import { getBoardState,calculateDeep } from "../protocol/state.js";
 import z from "zod";
 import { fenSchema } from "../runner/schema.js";
 import { moveSchema } from "../runner/schema.js";
-import { calculateDeep } from "../themes/state.js";
-import { PositionPrompter } from "../themes/positionPrompter.js";
+import { PositionPrompter } from "../protocol/positionPrompter.js";
 
 export function registerStateTools(server: McpServer): void {
     server.tool(
@@ -31,7 +30,7 @@ export function registerStateTools(server: McpServer): void {
           const moveToCheck = move.trim();
           const isLegal =
             legalMoves.includes(moveToCheck) ||
-            legalMoves.map((m) => m.toLowerCase()).includes(moveToCheck.toLowerCase());
+            legalMoves.map((m: string) => m.toLowerCase()).includes(moveToCheck.toLowerCase());
           
           const result = {
             isLegal,

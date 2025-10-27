@@ -11,7 +11,7 @@ export function registerThemeCalculationTools(server: McpServer): void {
 
     server.tool(
       "get-theme-scores",
-      "Get chess theme scores (material, mobility, space, positional, king safety) for a given position fen and the side to eval from",
+      "Get chess theme eval scores (material, mobility, space, positional, king safety, tactics, dark/light sqaure control) for a given position fen and the side to eval from. Positive eval means white is better, negative means black is better, Zero is equal",
       {
         fen: fenSchema,
         color: sideSchema,
@@ -118,8 +118,11 @@ export function registerThemeCalculationTools(server: McpServer): void {
           "material",
           "mobility", 
           "space",
-          "pawnStructure",
+          "positional",
           "kingSafety",
+          "tactical",
+          "lightsqaureControl",
+          "darksqaureControl"
         ]).describe("Theme to track"),
       },
       async ({ rootFen, moves, color, theme }) => {

@@ -1,4 +1,4 @@
-import { BISHOP, Chess, KING, KNIGHT, PAWN, QUEEN, ROOK } from "chess.js";
+import { BISHOP, Chess, KING, KNIGHT, PAWN, QUEEN, ROOK, } from "chess.js";
 var PieceType;
 (function (PieceType) {
     PieceType["Pawn"] = "P";
@@ -15,8 +15,8 @@ var PieceColour;
     PieceColour["Black"] = "B";
 })(PieceColour || (PieceColour = {}));
 export class TacticalBoard {
-    board = Array.from({ length: 8 }, () => Array(8).fill(''));
-    fen = '';
+    board = Array.from({ length: 8 }, () => Array(8).fill(""));
+    fen = "";
     squaresAttackedByWhite = Array.from({ length: 8 }, () => Array(8).fill(0));
     squaresAttackedByBlack = Array.from({ length: 8 }, () => Array(8).fill(0));
     hangingPieceDescriptions = [];
@@ -47,84 +47,84 @@ export class TacticalBoard {
     }
     toString() {
         const lines = [];
-        lines.push('CHESS POSITION TACTICAL ANALYSIS:');
-        lines.push('');
-        lines.push('=== PIECE VULNERABILITY ===');
-        lines.push('HANGING PIECES (Undefended and Attacked):');
-        lines.push('Definition: Pieces attacked by opponent with zero defenders - can be captured for free.');
+        lines.push("CHESS POSITION TACTICAL ANALYSIS:");
+        lines.push("");
+        lines.push("=== PIECE VULNERABILITY ===");
+        lines.push("HANGING PIECES (Undefended and Attacked):");
+        lines.push("Definition: Pieces attacked by opponent with zero defenders - can be captured for free.");
         if (this.hangingPieceDescriptions.length > 0) {
             for (let i = 0; i < this.hangingPieceDescriptions.length; i++) {
                 lines.push(`• ${this.hangingPieceDescriptions[i]} at ${this.hangingPieceCoordinates[i]} - IMMEDIATE THREAT`);
             }
         }
         else {
-            lines.push('• No hanging pieces detected');
+            lines.push("• No hanging pieces detected");
         }
-        lines.push('');
-        lines.push('SEMI-PROTECTED PIECES (Equal Attackers/Defenders):');
-        lines.push('Definition: Pieces where attackers equal defenders - captures lead to equal material trades.');
+        lines.push("");
+        lines.push("SEMI-PROTECTED PIECES (Equal Attackers/Defenders):");
+        lines.push("Definition: Pieces where attackers equal defenders - captures lead to equal material trades.");
         if (this.semiProtectedPieceDescriptions.length > 0) {
             for (let i = 0; i < this.semiProtectedPieceDescriptions.length; i++) {
                 lines.push(`• ${this.semiProtectedPieceDescriptions[i]} at ${this.semiProtectedPieceCoordinates[i]} - CONTESTED`);
             }
         }
         else {
-            lines.push('• No semi-protected pieces detected');
+            lines.push("• No semi-protected pieces detected");
         }
-        lines.push('');
-        lines.push('=== PIN DETECTION ===');
-        lines.push('ABSOLUTE PINS: Pieces pinned to the King - cannot move without exposing King to check');
-        lines.push('RELATIVE PINS: Pieces pinned to more valuable pieces - moving loses material advantage');
-        lines.push('');
-        lines.push('WHITE PINS (White pieces pinning Black):');
+        lines.push("");
+        lines.push("=== PIN DETECTION ===");
+        lines.push("ABSOLUTE PINS: Pieces pinned to the King - cannot move without exposing King to check");
+        lines.push("RELATIVE PINS: Pieces pinned to more valuable pieces - moving loses material advantage");
+        lines.push("");
+        lines.push("WHITE PINS (White pieces pinning Black):");
         if (this.whitePins.length > 0) {
             for (const pin of this.whitePins) {
-                const pinType = pin.isAbsolute ? 'ABSOLUTE PIN' : 'RELATIVE PIN';
+                const pinType = pin.isAbsolute ? "ABSOLUTE PIN" : "RELATIVE PIN";
                 lines.push(`• ${pinType}: ${pin.pinningPiece} at ${pin.pinningSquare} pins ${pin.pinnedPiece} at ${pin.pinnedSquare} to ${pin.targetPiece} at ${pin.targetSquare}`);
             }
         }
         else {
-            lines.push('• No pins by White detected');
+            lines.push("• No pins by White detected");
         }
-        lines.push('');
-        lines.push('BLACK PINS (Black pieces pinning White):');
+        lines.push("");
+        lines.push("BLACK PINS (Black pieces pinning White):");
         if (this.blackPins.length > 0) {
             for (const pin of this.blackPins) {
-                const pinType = pin.isAbsolute ? 'ABSOLUTE PIN' : 'RELATIVE PIN';
+                const pinType = pin.isAbsolute ? "ABSOLUTE PIN" : "RELATIVE PIN";
                 lines.push(`• ${pinType}: ${pin.pinningPiece} at ${pin.pinningSquare} pins ${pin.pinnedPiece} at ${pin.pinnedSquare} to ${pin.targetPiece} at ${pin.targetSquare}`);
             }
         }
         else {
-            lines.push('• No pins by Black detected');
+            lines.push("• No pins by Black detected");
         }
-        lines.push('');
-        lines.push('=== FORK OPPORTUNITIES ===');
-        lines.push('DEADLY FORKS: Attack 2+ pieces where at least one is higher value OR undefended (profitable capture guaranteed)');
-        lines.push('REGULAR FORKS: Attack 2+ pieces but exchanges may not be favorable (positional pressure)');
-        lines.push('');
-        lines.push('WHITE FORKS:');
+        lines.push("");
+        lines.push("=== FORK OPPORTUNITIES ===");
+        lines.push("DEADLY FORKS: Attack 2+ pieces where at least one is higher value OR undefended (profitable capture guaranteed)");
+        lines.push("REGULAR FORKS: Attack 2+ pieces but exchanges may not be favorable (positional pressure)");
+        lines.push("");
+        lines.push("WHITE FORKS:");
         const whiteForksBefore = lines.length;
-        this.printAllForks(lines, 'w');
+        this.printAllForks(lines, "w");
         if (lines.length === whiteForksBefore) {
-            lines.push('• No white fork opportunities detected');
+            lines.push("• No white fork opportunities detected");
         }
-        lines.push('');
-        lines.push('BLACK FORKS:');
+        lines.push("");
+        lines.push("BLACK FORKS:");
         const blackForksBefore = lines.length;
-        this.printAllForks(lines, 'b');
+        this.printAllForks(lines, "b");
         if (lines.length === blackForksBefore) {
-            lines.push('• No black fork opportunities detected');
+            lines.push("• No black fork opportunities detected");
         }
-        lines.push('');
-        lines.push('=== TACTICAL SUMMARY ===');
-        lines.push('PRIORITY ACTIONS:');
-        lines.push('1. Immediately address any hanging pieces (move or defend them)');
-        lines.push('2. Be aware of absolute pins - these pieces cannot move');
-        lines.push('3. Execute deadly fork opportunities when available');
-        lines.push('4. Exploit relative pins for tactical advantage');
-        lines.push('5. Monitor semi-protected pieces for tactical combinations');
-        lines.push('6. Look for counter-tactics against opponent fork threats');
-        return lines.join('\n');
+        lines.push("");
+        lines.push("=== TACTICAL SUMMARY ===");
+        lines.push("PRIORITY ACTIONS:");
+        lines.push("1. Immediately address any hanging pieces (move or defend them)");
+        lines.push("2. Be aware of absolute pins - these pieces cannot move");
+        lines.push("3. Execute deadly fork opportunities when available");
+        lines.push("4. Exploit relative pins for tactical advantage");
+        lines.push("5. Monitor semi-protected pieces for tactical combinations");
+        lines.push("6. Look for counter-tactics against opponent fork threats");
+        return lines.join("\n");
     }
     detectPins() {
         // Check for pins by white pieces (pinning black pieces)
@@ -140,7 +140,9 @@ export class TacticalBoard {
                 const [colour, piece] = this.getPieceAt(x, y);
                 // Only check sliding pieces that can create pins
                 if (colour === attackingColor &&
-                    (piece === PieceType.Bishop || piece === PieceType.Rook || piece === PieceType.Queen)) {
+                    (piece === PieceType.Bishop ||
+                        piece === PieceType.Rook ||
+                        piece === PieceType.Queen)) {
                     // Get the square notation
                     const attackingSquare = this.coordsToSquare(x, y);
                     // Check each direction this piece can attack
@@ -155,7 +157,7 @@ export class TacticalBoard {
                                 pinningSquare: attackingSquare,
                                 targetPiece: pinResult.targetPiece,
                                 targetSquare: pinResult.targetSquare,
-                                isAbsolute: pinResult.isAbsolute
+                                isAbsolute: pinResult.isAbsolute,
                             });
                         }
                     }
@@ -171,7 +173,9 @@ export class TacticalBoard {
         }
     }
     checkDirectionForPin(x, y, dx, dy, attackingColor) {
-        const enemyColor = attackingColor === PieceColour.White ? PieceColour.Black : PieceColour.White;
+        const enemyColor = attackingColor === PieceColour.White
+            ? PieceColour.Black
+            : PieceColour.White;
         let firstPiece = null;
         let secondPiece = null;
         let currentX = x + dx;
@@ -207,7 +211,7 @@ export class TacticalBoard {
                         pinnedSquare: this.coordsToSquare(firstPiece.x, firstPiece.y),
                         targetPiece: `${this.getColor(secondPiece.color)} ${this.getPieceMap(secondPiece.piece)}`,
                         targetSquare: this.coordsToSquare(secondPiece.x, secondPiece.y),
-                        isAbsolute: isAbsolute
+                        isAbsolute: isAbsolute,
                     };
                 }
             }
@@ -217,18 +221,37 @@ export class TacticalBoard {
     getDirectionsForPiece(piece) {
         switch (piece) {
             case PieceType.Bishop:
-                return [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+                return [
+                    [-1, -1],
+                    [-1, 1],
+                    [1, -1],
+                    [1, 1],
+                ];
             case PieceType.Rook:
-                return [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                return [
+                    [-1, 0],
+                    [1, 0],
+                    [0, -1],
+                    [0, 1],
+                ];
             case PieceType.Queen:
-                return [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+                return [
+                    [-1, -1],
+                    [-1, 0],
+                    [-1, 1],
+                    [0, -1],
+                    [0, 1],
+                    [1, -1],
+                    [1, 0],
+                    [1, 1],
+                ];
             default:
                 return [];
         }
     }
     coordsToSquare(x, y) {
-        const file = String.fromCharCode(x + 'a'.charCodeAt(0));
-        const rank = String.fromCharCode((7 - y) + '1'.charCodeAt(0));
+        const file = String.fromCharCode(x + "a".charCodeAt(0));
+        const rank = String.fromCharCode(7 - y + "1".charCodeAt(0));
         return `${file}${rank}`;
     }
     getPieceValueByType(piece) {
@@ -276,15 +299,19 @@ export class TacticalBoard {
             for (let x = 0; x < 8; x++) {
                 const [colour, piece] = this.getPieceAt(x, y);
                 if (piece !== PieceType.None && piece !== PieceType.King) {
-                    const defended = colour === PieceColour.White ? this.squaresAttackedByWhite : this.squaresAttackedByBlack;
-                    const attacked = colour === PieceColour.Black ? this.squaresAttackedByWhite : this.squaresAttackedByBlack;
+                    const defended = colour === PieceColour.White
+                        ? this.squaresAttackedByWhite
+                        : this.squaresAttackedByBlack;
+                    const attacked = colour === PieceColour.Black
+                        ? this.squaresAttackedByWhite
+                        : this.squaresAttackedByBlack;
                     const attackers = attacked[x][y];
                     const defenders = defended[x][y];
-                    const xcoord = String.fromCharCode(x + 'a'.charCodeAt(0));
-                    const ycoord = String.fromCharCode((7 - y) + '1'.charCodeAt(0));
+                    const xcoord = String.fromCharCode(x + "a".charCodeAt(0));
+                    const ycoord = String.fromCharCode(7 - y + "1".charCodeAt(0));
                     const coord = `${xcoord}${ycoord}`;
                     const pieceDescription = `${this.getColor(colour)} ${this.getPieceMap(piece)}`;
-                    if (attackers > defenders && defenders === 0) { // need to add threats attacker lower piece value attacking higher piece
+                    if (attackers > defenders && defenders === 0) {
                         this.hangingPieceDescriptions.push(pieceDescription);
                         this.hangingPieceCoordinates.push(coord);
                     }
@@ -303,7 +330,9 @@ export class TacticalBoard {
         return piece.toUpperCase();
     }
     getPieceColour(piece) {
-        return piece === piece.toUpperCase() ? PieceColour.White : PieceColour.Black;
+        return piece === piece.toUpperCase()
+            ? PieceColour.White
+            : PieceColour.Black;
     }
     getPieceAt(x, y) {
         const piece = this.board[x][y];
@@ -332,11 +361,11 @@ export class TacticalBoard {
         let xrays;
         if (dx === 0 || dy === 0) {
             // can x-ray through rooks and queen of same colour
-            xrays = colour === PieceColour.White ? ['R', 'Q'] : ['r', 'q'];
+            xrays = colour === PieceColour.White ? ["R", "Q"] : ["r", "q"];
         }
         else {
             // can x-ray through bishops and queen of same colour
-            xrays = colour === PieceColour.White ? ['B', 'Q'] : ['b', 'q'];
+            xrays = colour === PieceColour.White ? ["B", "Q"] : ["b", "q"];
         }
         while (true) {
             i += dx;
@@ -362,7 +391,9 @@ export class TacticalBoard {
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 const [colour, piece] = this.getPieceAt(x, y);
-                const squares = (colour === PieceColour.White) ? this.squaresAttackedByWhite : this.squaresAttackedByBlack;
+                const squares = colour === PieceColour.White
+                    ? this.squaresAttackedByWhite
+                    : this.squaresAttackedByBlack;
                 switch (piece) {
                     case PieceType.Pawn:
                         const dir = colour === PieceColour.White ? -1 : 1;
@@ -371,8 +402,14 @@ export class TacticalBoard {
                         break;
                     case PieceType.Knight:
                         const knightMoves = [
-                            [-2, -1], [-2, 1], [-1, -2], [1, -2],
-                            [2, -1], [2, 1], [-1, 2], [1, 2]
+                            [-2, -1],
+                            [-2, 1],
+                            [-1, -2],
+                            [1, -2],
+                            [2, -1],
+                            [2, 1],
+                            [-1, 2],
+                            [1, 2],
                         ];
                         for (const [dx, dy] of knightMoves) {
                             this.addAttackedSquare(squares, x + dx, y + dy);
@@ -403,9 +440,9 @@ export class TacticalBoard {
     }
     getPieceValue(piece) {
         switch (piece) {
-            case 'p':
+            case "p":
                 return 1;
-            case 'b':
+            case "b":
                 return 3;
             case "n":
                 return 3;
@@ -419,12 +456,12 @@ export class TacticalBoard {
     }
     getPieceName(piece) {
         switch (piece) {
-            case 'p':
+            case "p":
                 return "pawn";
-            case 'b':
+            case "b":
                 return "bishop";
             case "n":
-                return "knight";
+                return "knight"; // Fixed typo: was "night"
             case "r":
                 return "rook";
             case "q":
@@ -462,27 +499,27 @@ export class TacticalBoard {
     printAllForks(lines, side) {
         const pawn = {
             color: side,
-            type: PAWN
+            type: PAWN,
         };
         const bishop = {
             color: side,
-            type: BISHOP
+            type: BISHOP,
         };
         const knight = {
             color: side,
-            type: KNIGHT
+            type: KNIGHT,
         };
         const rook = {
             color: side,
-            type: ROOK
+            type: ROOK,
         };
         const queen = {
             color: side,
-            type: QUEEN
+            type: QUEEN,
         };
         const king = {
             color: side,
-            type: KING
+            type: KING,
         };
         this.printPieceForks(pawn, lines, side);
         this.printPieceForks(knight, lines, side);
@@ -504,8 +541,10 @@ export class TacticalBoard {
             if (pieceOnSquare && pieceOnSquare.color !== side) {
                 const targetValue = this.getPieceValue(pieceOnSquare.type);
                 // Check if target square is defended by the enemy
-                const defended = side === 'w' ? this.squaresAttackedByBlack : this.squaresAttackedByWhite;
-                const file = square.charCodeAt(0) - 'a'.charCodeAt(0);
+                const defended = side === "w"
+                    ? this.squaresAttackedByBlack
+                    : this.squaresAttackedByWhite;
+                const file = square.charCodeAt(0) - "a".charCodeAt(0);
                 const rank = parseInt(square[1]) - 1;
                 const isDefended = defended[file][7 - rank] > 0; // Note: board coordinates are flipped
                 // A target is "deadly" if:
@@ -515,29 +554,32 @@ export class TacticalBoard {
                 attackableTargets.push({
                     square: square,
                     piece: pieceOnSquare.type,
-                    isDeadly: isDeadly
+                    isDeadly: isDeadly,
                 });
             }
         }
         // Filter to only deadly targets
-        const deadlyTargets = attackableTargets.filter(target => target.isDeadly);
+        const deadlyTargets = attackableTargets.filter((target) => target.isDeadly);
         // A deadly fork occurs when a piece can attack 2 or more deadly targets simultaneously
         if (deadlyTargets.length >= 2) {
             const targetDescriptions = deadlyTargets
-                .map(target => {
+                .map((target) => {
                 const value = this.getPieceValue(target.piece);
-                const defended = attackableTargets.find(t => t.square === target.square)?.isDeadly ?
-                    (value > attackingPieceValue ? "(higher value)" : "(undefended)") : "";
+                const defended = attackableTargets.find((t) => t.square === target.square)?.isDeadly
+                    ? value > attackingPieceValue
+                        ? "(higher value)"
+                        : "(undefended)"
+                    : "";
                 return `${this.getPieceName(target.piece)} on ${target.square} ${defended}`;
             })
-                .join(', ');
+                .join(", ");
             forks.push(`DEADLY FORK: The ${this.getPieceName(piece)} at ${pieceSq} is forking: ${targetDescriptions}`);
         }
         // Also report regular forks (attacking 2+ pieces) but mark them as less critical
         else if (attackableTargets.length >= 2) {
             const targetDescriptions = attackableTargets
-                .map(target => `${this.getPieceName(target.piece)} on ${target.square}`)
-                .join(', ');
+                .map((target) => `${this.getPieceName(target.piece)} on ${target.square}`)
+                .join(", ");
             forks.push(`Regular fork: The ${this.getPieceName(piece)} at ${pieceSq} is attacking: ${targetDescriptions} (but exchange may not be favorable)`);
         }
         return forks;
@@ -545,49 +587,70 @@ export class TacticalBoard {
     getAttackedSquares(piece, square, chess) {
         const attackedSquares = [];
         // Convert square notation to coordinates
-        const file = square.charCodeAt(0) - 'a'.charCodeAt(0);
+        const file = square.charCodeAt(0) - "a".charCodeAt(0);
         const rank = parseInt(square[1]) - 1;
         switch (piece) {
-            case 'p': // pawn
+            case "p": // pawn
                 const pieceColor = chess.get(square)?.color;
-                const direction = pieceColor === 'w' ? 1 : -1;
+                const direction = pieceColor === "w" ? 1 : -1;
                 const newRank = rank + direction;
                 if (newRank >= 0 && newRank <= 7) {
                     if (file > 0) {
-                        attackedSquares.push(`${String.fromCharCode('a'.charCodeAt(0) + file - 1)}${newRank + 1}`);
+                        attackedSquares.push(`${String.fromCharCode("a".charCodeAt(0) + file - 1)}${newRank + 1}`);
                     }
                     if (file < 7) {
-                        attackedSquares.push(`${String.fromCharCode('a'.charCodeAt(0) + file + 1)}${newRank + 1}`);
+                        attackedSquares.push(`${String.fromCharCode("a".charCodeAt(0) + file + 1)}${newRank + 1}`);
                     }
                 }
                 break;
-            case 'n': // knight
+            case "n": // knight
                 const knightMoves = [
-                    [-2, -1], [-2, 1], [-1, -2], [1, -2],
-                    [2, -1], [2, 1], [-1, 2], [1, 2]
+                    [-2, -1],
+                    [-2, 1],
+                    [-1, -2],
+                    [1, -2],
+                    [2, -1],
+                    [2, 1],
+                    [-1, 2],
+                    [1, 2],
                 ];
                 for (const [df, dr] of knightMoves) {
                     const newFile = file + df;
                     const newRank = rank + dr;
                     if (newFile >= 0 && newFile <= 7 && newRank >= 0 && newRank <= 7) {
-                        attackedSquares.push(`${String.fromCharCode('a'.charCodeAt(0) + newFile)}${newRank + 1}`);
+                        attackedSquares.push(`${String.fromCharCode("a".charCodeAt(0) + newFile)}${newRank + 1}`);
                     }
                 }
                 break;
-            case 'b': // bishop
-                this.addSlidingAttacks(attackedSquares, file, rank, [[-1, -1], [-1, 1], [1, -1], [1, 1]], chess);
-                break;
-            case 'r': // rook
-                this.addSlidingAttacks(attackedSquares, file, rank, [[-1, 0], [1, 0], [0, -1], [0, 1]], chess);
-                break;
-            case 'q': // queen
+            case "b": // bishop
                 this.addSlidingAttacks(attackedSquares, file, rank, [
-                    [-1, -1], [-1, 0], [-1, 1],
-                    [0, -1], [0, 1],
-                    [1, -1], [1, 0], [1, 1]
+                    [-1, -1],
+                    [-1, 1],
+                    [1, -1],
+                    [1, 1],
                 ], chess);
                 break;
-            case 'k': // king
+            case "r": // rook
+                this.addSlidingAttacks(attackedSquares, file, rank, [
+                    [-1, 0],
+                    [1, 0],
+                    [0, -1],
+                    [0, 1],
+                ], chess);
+                break;
+            case "q": // queen
+                this.addSlidingAttacks(attackedSquares, file, rank, [
+                    [-1, -1],
+                    [-1, 0],
+                    [-1, 1],
+                    [0, -1],
+                    [0, 1],
+                    [1, -1],
+                    [1, 0],
+                    [1, 1],
+                ], chess);
+                break;
+            case "k": // king
                 for (let df = -1; df <= 1; df++) {
                     for (let dr = -1; dr <= 1; dr++) {
                         if (df === 0 && dr === 0)
@@ -595,7 +658,7 @@ export class TacticalBoard {
                         const newFile = file + df;
                         const newRank = rank + dr;
                         if (newFile >= 0 && newFile <= 7 && newRank >= 0 && newRank <= 7) {
-                            attackedSquares.push(`${String.fromCharCode('a'.charCodeAt(0) + newFile)}${newRank + 1}`);
+                            attackedSquares.push(`${String.fromCharCode("a".charCodeAt(0) + newFile)}${newRank + 1}`);
                         }
                     }
                 }
@@ -610,10 +673,13 @@ export class TacticalBoard {
             while (true) {
                 currentFile += df;
                 currentRank += dr;
-                if (currentFile < 0 || currentFile > 7 || currentRank < 0 || currentRank > 7) {
+                if (currentFile < 0 ||
+                    currentFile > 7 ||
+                    currentRank < 0 ||
+                    currentRank > 7) {
                     break;
                 }
-                const targetSquare = `${String.fromCharCode('a'.charCodeAt(0) + currentFile)}${currentRank + 1}`;
+                const targetSquare = `${String.fromCharCode("a".charCodeAt(0) + currentFile)}${currentRank + 1}`;
                 attackedSquares.push(targetSquare);
                 // Stop if there's a piece on this square
                 const pieceOnSquare = chess.get(targetSquare);
@@ -628,20 +694,129 @@ export class TacticalBoard {
         let file = 0;
         for (let i = 0; i < fen.length; i++) {
             const char = fen[i];
-            if (char > '0' && char <= '8') {
+            if (char > "0" && char <= "8") {
                 const blankCount = parseInt(char, 10);
                 file += blankCount;
             }
-            else if (char === '/') {
+            else if (char === "/") {
                 rank++;
                 file = 0;
             }
             else {
-                if (char === ' ')
+                if (char === " ")
                     break;
                 this.board[file][rank] = char;
                 file++;
             }
         }
+    }
+    /**
+     * Calculate a tactical score for the given side.
+     * Higher score = better tactical position
+     * Lower score = more tactical weaknesses
+     *
+     * Scoring system:
+     * - Hanging pieces: -10 points each (critical weakness)
+     * - Semi-protected pieces: -3 points each (vulnerable)
+     * - Pins created by this side: +5 points for absolute, +3 for relative
+     * - Pins against this side: -5 points for absolute, -3 for relative
+     * - Deadly forks available: +8 points each
+     * - Regular forks available: +4 points each
+     * - Opponent's deadly forks: -8 points each
+     * - Opponent's regular forks: -4 points each
+     */
+    calculateTacticalScore(side) {
+        let score = 0;
+        // 1. Evaluate hanging pieces (most critical weakness)
+        for (let i = 0; i < this.hangingPieceDescriptions.length; i++) {
+            const pieceDesc = this.hangingPieceDescriptions[i];
+            const belongsToSide = (side === "w" && pieceDesc.includes("white")) ||
+                (side === "b" && pieceDesc.includes("black"));
+            if (belongsToSide) {
+                score -= 10; // Our hanging piece = bad
+            }
+            else {
+                score += 10; // Opponent's hanging piece = good for us
+            }
+        }
+        // 2. Evaluate semi-protected pieces (moderate weakness)
+        for (let i = 0; i < this.semiProtectedPieceDescriptions.length; i++) {
+            const pieceDesc = this.semiProtectedPieceDescriptions[i];
+            const belongsToSide = (side === "w" && pieceDesc.includes("white")) ||
+                (side === "b" && pieceDesc.includes("black"));
+            if (belongsToSide) {
+                score -= 3; // Our semi-protected piece = slight weakness
+            }
+            else {
+                score += 3; // Opponent's semi-protected piece = slight advantage
+            }
+        }
+        // 3. Evaluate pins created by our side (tactical advantage)
+        const ourPins = side === "w" ? this.whitePins : this.blackPins;
+        for (const pin of ourPins) {
+            if (pin.isAbsolute) {
+                score += 5; // Absolute pin is very strong
+            }
+            else {
+                score += 3; // Relative pin is moderately strong
+            }
+        }
+        // 4. Evaluate pins against our side (tactical weakness)
+        const opponentPins = side === "w" ? this.blackPins : this.whitePins;
+        for (const pin of opponentPins) {
+            if (pin.isAbsolute) {
+                score -= 5; // Being absolutely pinned is very bad
+            }
+            else {
+                score -= 3; // Being relatively pinned is moderately bad
+            }
+        }
+        // 5. Evaluate fork opportunities
+        const pieces = [
+            { color: side, type: PAWN },
+            { color: side, type: KNIGHT },
+            { color: side, type: BISHOP },
+            { color: side, type: ROOK },
+            { color: side, type: QUEEN },
+            { color: side, type: KING },
+        ];
+        // Count our forks
+        for (const piece of pieces) {
+            const forkResults = this.calculateTotalFork(piece, side);
+            for (const forkList of forkResults) {
+                for (const fork of forkList) {
+                    if (fork.includes("DEADLY FORK")) {
+                        score += 8; // Deadly fork is very valuable
+                    }
+                    else if (fork.includes("Regular fork")) {
+                        score += 4; // Regular fork has moderate value
+                    }
+                }
+            }
+        }
+        // Count opponent's forks
+        const opponentSide = side === "w" ? "b" : "w";
+        const opponentPieces = [
+            { color: opponentSide, type: PAWN },
+            { color: opponentSide, type: KNIGHT },
+            { color: opponentSide, type: BISHOP },
+            { color: opponentSide, type: ROOK },
+            { color: opponentSide, type: QUEEN },
+            { color: opponentSide, type: KING },
+        ];
+        for (const piece of opponentPieces) {
+            const forkResults = this.calculateTotalFork(piece, opponentSide);
+            for (const forkList of forkResults) {
+                for (const fork of forkList) {
+                    if (fork.includes("DEADLY FORK")) {
+                        score -= 8; // Opponent's deadly fork is very dangerous
+                    }
+                    else if (fork.includes("Regular fork")) {
+                        score -= 4; // Opponent's regular fork is moderately dangerous
+                    }
+                }
+            }
+        }
+        return score;
     }
 }

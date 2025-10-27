@@ -22,13 +22,14 @@ export interface PositionalPawn {
   isolatedpawncount: number;
   backwardpawncount: number;
   passedpawncount: number;
-  weaknessscore: number;
+  positionalAdvatange: number;
 }
 
 export interface SpaceControl {
   centerspacecontrolscore: number;
   flankspacecontrolscore: number;
   totalspacecontrolscore: number;
+  spaceadvantage: number;
 }
 
 export interface SidePiecePlacement {
@@ -53,7 +54,7 @@ export interface KingSafety {
   attackerscount: number;
   defenderscount: number;
   pawnshield: number;
-  kingsafetyscore: number;
+  kingsafetysadvantage: number;
   cancastle: boolean;
   hascastled: boolean;
 }
@@ -73,6 +74,7 @@ export interface PieceMobility {
   bishopmobility: number;
   knightmobility: number;
   totalmobility: number;
+  mobilityadvantage: number;
 }
 
 export interface SideSquareControl{
@@ -80,6 +82,9 @@ export interface SideSquareControl{
   darkSquares: string[],
   lightSquareControl: number,
   darkSqaureControl: number
+  lightSquareAdvantage: number,
+  darkSqaureAdvantage: number,
+  totalSqaureAdvantage: number;
 }
 
 export interface MaterialInfo {
@@ -93,6 +98,7 @@ export interface MaterialInfo {
     queens: number;
   };
   bishoppair: boolean;
+  materialadvantage: number;
 }
 
 export enum STATE_THEMES {
@@ -101,9 +107,11 @@ export enum STATE_THEMES {
     SPACE,
     PLACEMENT,
     POSITIONAL,
-    SQAURE_CONTROL,
+    SQAURE_CONTROL_LIGHT,
+    SQAURE_CONTROL_DARK,
     KING_SAFETY,
-    MOBILITY
+    MOBILITY,
+    TACTICAL
 }
 
 export interface SideStateScores{
@@ -132,7 +140,6 @@ export interface BoardState {
   sidetomove: string;
   gamePhase: 'opening' | 'middlegame' | 'endgame';
 }
-
 
 interface Opening {
   eco: string;
