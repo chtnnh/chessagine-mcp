@@ -5,11 +5,13 @@ import { Chess } from "chess.js";
 
 export function registerChessDBTools(server: McpServer): void {
     
-    server.tool(
+    server.registerTool(
       "get-chessdb-analysis",
-      "Fetch position analysis and candidate moves from ChessDB",
       {
-        fen: fenSchema,
+      description: "Fetch position analysis and candidate moves from ChessDB",
+      inputSchema: {
+        fen: fenSchema
+      }  
       },
       async ({ fen }) => {
         const encodedFen = encodeURIComponent(fen);
@@ -20,7 +22,7 @@ export function registerChessDBTools(server: McpServer): void {
           return {
             content: [
               {
-                type: "text", // 
+                type: "text",
                 text: `HTTP ${response.status}: Failed to fetch ChessDB data`,
               },
             ],

@@ -4,18 +4,22 @@ import { fenSchema, engineDepthSchema } from "../runner/schema.js";
 import { z } from "zod";
 
 export function registerLocalStockfishTools(server: McpServer): void {
-  let stockfishClient: MCPStockfishHTTPClient;
+
   const host = "https://mcpstockfish.vercel.app/";
 
-  stockfishClient = new MCPStockfishHTTPClient(host);
+  const stockfishClient = new MCPStockfishHTTPClient(host);
 
-  // General Stockfish analysis
-  server.tool(
+  server.registerTool(
     "get-stockfish-analysis",
-    "Analyze a chess position using Stockfish WASM engine",
     {
-      fen: fenSchema,
-      depth: engineDepthSchema,
+      description: "Analyze a chess position using Stockfish 17.1 WASM engine",
+      inputSchema: {
+        fen: fenSchema,
+        depth: engineDepthSchema,
+      },
+      annotations: {
+        openWorldHint: true
+      }
     },
     async ({ fen, depth }) => {
       try {
@@ -55,12 +59,17 @@ export function registerLocalStockfishTools(server: McpServer): void {
   );
 
   // Get best move
-  server.tool(
-    "get-best-move",
-    "Find the best move in a chess position using Stockfish",
+  server.registerTool(
+    "get-stockfish-best-move",
     {
-      fen: fenSchema,
-      depth: engineDepthSchema,
+      description: "Find the best move in a chess position using Stockfish 17.1 WASM engine",
+      inputSchema: {
+        fen: fenSchema,
+        depth: engineDepthSchema,
+      },
+      annotations: {
+        openWorldHint: true
+      }
     },
     async ({ fen, depth }) => {
       try {
@@ -103,13 +112,18 @@ export function registerLocalStockfishTools(server: McpServer): void {
   );
 
   // Multi-PV analysis
-  server.tool(
+  server.registerTool(
     "get-stockfish-multipv-analysis",
-    "Analyze a chess position and get multiple best move candidates",
     {
-      fen: fenSchema,
-      depth: engineDepthSchema,
-      numLines: z.number().min(1).max(5).describe("Number of best move lines to analyze (1-5)"),
+      description: "Analyze a chess position and get multiple best move candidates with Stocfish 17.1 WASM engine",
+      inputSchema: {
+        fen: fenSchema,
+        depth: engineDepthSchema,
+        numLines: z.number().min(1).max(5).describe("Number of best move lines to analyze (1-5)"),
+      },
+      annotations: {
+        openWorldHint: true
+      }
     },
     async ({ fen, depth, numLines }) => {
       try {
@@ -149,17 +163,22 @@ export function registerLocalStockfishTools(server: McpServer): void {
   );
 
   // Batch analysis
-  server.tool(
+  server.registerTool(
     "get-stockfish-batch-analysis",
-    "Analyze multiple chess positions in batch using Stockfish",
     {
-      positions: z.array(
-        z.object({
-          fen: fenSchema,
-        })
-      ).describe("Array of positions to analyze"),
+      description: "Analyze multiple chess positions in batch using Stockfish 17.1 WASM engine",
+      inputSchema: {
+        positions: z.array(
+          z.object({
+            fen: fenSchema,
+          })
+        ).describe("Array of positions to analyze"),
+      },
+      annotations: {
+        openWorldHint: true,
+      }
     },
-    async ({ positions,}) => {
+    async ({ positions }) => {
       try {
         const isHealthy = await stockfishClient.checkHealth();
         if (!isHealthy) {

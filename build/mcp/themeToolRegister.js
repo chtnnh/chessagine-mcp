@@ -5,9 +5,15 @@ import { getThemeScores, analyzeVariationThemes, getThemeProgression, compareVar
 import { validColorSchema } from "../utils/utils.js";
 import { TacticalBoard } from "../themes/tacticalBoard.js";
 export function registerThemeCalculationTools(server) {
-    server.tool("get-theme-scores", "Get chess theme eval scores (material, mobility, space, positional, king safety, tactics, dark/light sqaure control) for a given position fen and the side to eval from. Positive eval means white is better, negative means black is better, Zero is equal", {
-        fen: fenSchema,
-        color: sideSchema,
+    server.registerTool("get-theme-scores", {
+        description: "Get chess theme eval scores (material, mobility, space, positional, king safety, tactics, dark/light sqaure control) for a given position fen and the side to eval from. Positive eval means white is better, negative means black is better, Zero is equal",
+        inputSchema: {
+            fen: fenSchema,
+            color: sideSchema,
+        },
+        annotations: {
+            openWorldHint: false
+        }
     }, async ({ fen, color }) => {
         try {
             const validColor = validColorSchema(color);
@@ -32,8 +38,14 @@ export function registerThemeCalculationTools(server) {
             };
         }
     });
-    server.tool("get-tactical-position-summary", "Get tactical position summary like hanging pieces, semi protected pieces, forks, pins for the given fen", {
-        fen: fenSchema
+    server.registerTool("get-tactical-position-summary", {
+        description: "Get tactical position summary like hanging pieces, semi protected pieces, forks, pins for the given fen",
+        inputSchema: {
+            fen: fenSchema
+        },
+        annotations: {
+            openWorldHint: false
+        }
     }, async ({ fen }) => {
         try {
             const tactics = new TacticalBoard(fen);
@@ -57,10 +69,16 @@ export function registerThemeCalculationTools(server) {
             };
         }
     });
-    server.tool("analyze-variation-themes", "Analyze how chess themes change across a sequence of moves", {
-        rootFen: fenSchema,
-        moves: z.array(z.string()).describe("Array of moves in algebraic notation"),
-        color: sideSchema,
+    server.registerTool("analyze-variation-themes", {
+        description: "Analyze how chess themes change across a sequence of moves",
+        inputSchema: {
+            rootFen: fenSchema,
+            moves: z.array(z.string()).describe("Array of moves in algebraic notation"),
+            color: sideSchema,
+        },
+        annotations: {
+            openWorldHint: false
+        }
     }, async ({ rootFen, moves, color }) => {
         try {
             const validColor = validColorSchema(color);
@@ -85,20 +103,26 @@ export function registerThemeCalculationTools(server) {
             };
         }
     });
-    server.tool("get-theme-progression", "Get the progression of a specific chess theme over a variation", {
-        rootFen: fenSchema,
-        moves: z.array(z.string()).describe("Array of moves in algebraic notation"),
-        color: sideSchema,
-        theme: z.enum([
-            "material",
-            "mobility",
-            "space",
-            "positional",
-            "kingSafety",
-            "tactical",
-            "lightsqaureControl",
-            "darksqaureControl"
-        ]).describe("Theme to track"),
+    server.registerTool("get-theme-progression", {
+        description: "Get the progression of a specific chess theme over a variation",
+        inputSchema: {
+            rootFen: fenSchema,
+            moves: z.array(z.string()).describe("Array of moves in algebraic notation"),
+            color: sideSchema,
+            theme: z.enum([
+                "material",
+                "mobility",
+                "space",
+                "positional",
+                "kingSafety",
+                "tactical",
+                "lightsqaureControl",
+                "darksqaureControl"
+            ]).describe("Theme to track"),
+        },
+        annotations: {
+            openWorldHint: false
+        }
     }, async ({ rootFen, moves, color, theme }) => {
         try {
             const validColor = validColorSchema(color);
@@ -123,13 +147,19 @@ export function registerThemeCalculationTools(server) {
             };
         }
     });
-    server.tool("compare-variations", "Compare multiple chess variations and return their theme analyses", {
-        rootFen: fenSchema,
-        variations: z.array(z.object({
-            name: z.string(),
-            moves: z.array(z.string()),
-        })).describe("Array of variations to compare"),
-        color: sideSchema,
+    server.registerTool("compare-variations", {
+        description: "Compare multiple chess variations and return their theme analyses",
+        inputSchema: {
+            rootFen: fenSchema,
+            variations: z.array(z.object({
+                name: z.string(),
+                moves: z.array(z.string()),
+            })).describe("Array of variations to compare"),
+            color: sideSchema,
+        },
+        annotations: {
+            openWorldHint: false
+        }
     }, async ({ rootFen, variations, color }) => {
         try {
             const validColor = validColorSchema(color);
@@ -154,11 +184,17 @@ export function registerThemeCalculationTools(server) {
             };
         }
     });
-    server.tool("find-critical-moments", "Find moves in a chess variation where there are significant theme changes", {
-        rootFen: fenSchema,
-        moves: z.array(z.string()).describe("Array of moves in algebraic notation"),
-        color: sideSchema,
-        threshold: z.number().optional().default(0.5).describe("Threshold for significant changes"),
+    server.registerTool("find-critical-moments", {
+        description: "Find moves in a chess variation where there are significant theme changes",
+        inputSchema: {
+            rootFen: fenSchema,
+            moves: z.array(z.string()).describe("Array of moves in algebraic notation"),
+            color: sideSchema,
+            threshold: z.number().optional().default(0.5).describe("Threshold for significant changes"),
+        },
+        annotations: {
+            openWorldHint: false
+        }
     }, async ({ rootFen, moves, color, threshold = 0.5 }) => {
         try {
             const validColor = validColorSchema(color);
@@ -183,18 +219,24 @@ export function registerThemeCalculationTools(server) {
             };
         }
     });
-    server.tool("generate-game-review", "Generate a comprehensive game review with theme progression analysis from a PGN. Analyzes material, mobility, space, positional play, and king safety for both players throughout the game.", {
-        pgn: gamePgnSchema,
-        criticalMomentThreshold: z.number()
-            .min(0.1)
-            .max(2.0)
-            .default(0.5)
-            .optional()
-            .describe("Threshold for identifying critical moments (default: 0.5). Lower values find more moments."),
-        format: z.enum(["json", "text"])
-            .default("text")
-            .optional()
-            .describe("Output format: 'json' for structured data or 'text' for human-readable report"),
+    server.registerTool("generate-game-review", {
+        description: "Generate a comprehensive game review with theme progression analysis from a PGN. Analyzes material, mobility, space, positional play, and king safety for both players throughout the game.",
+        inputSchema: {
+            pgn: gamePgnSchema,
+            criticalMomentThreshold: z.number()
+                .min(0.1)
+                .max(2.0)
+                .default(0.5)
+                .optional()
+                .describe("Threshold for identifying critical moments (default: 0.5). Lower values find more moments."),
+            format: z.enum(["json", "text"])
+                .default("text")
+                .optional()
+                .describe("Output format: 'json' for structured data or 'text' for human-readable report"),
+        },
+        annotations: {
+            openWorldHint: false
+        }
     }, async ({ pgn, criticalMomentThreshold = 0.5, format = "text" }) => {
         try {
             const review = generateGameReview(pgn, criticalMomentThreshold);

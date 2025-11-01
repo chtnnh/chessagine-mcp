@@ -12,17 +12,23 @@ import {
   getDifficultyLevel,
   getThemeDescriptions,
 } from "../tools/puzzle.js";
+import { MasterGamesSchema } from "../types/schema.js";
 
 // Get token from environment variable
 const LICHESS_STUDY_TOKEN = process.env.LICHESS_API_TOKEN || "";
 const LICHESS_USERNAME = process.env.LICHESS_USERNAME || "";
 
 export function registerLichessTools(server: McpServer): void {
-  server.tool(
+  server.registerTool(
     "get-lichess-master-games",
-    "Fetch master-level games and opening statistics from Lichess for a given position",
     {
-      fen: fenSchema,
+      description: "Fetch master-level games and opening statistics from Lichess for a given position",
+      inputSchema: {
+        fen: fenSchema
+      },
+      annotations: {
+        openWorldHint: true
+      }  
     },
     async ({ fen }) => {
       const masterData = await getOpeningStats(fen);
@@ -38,29 +44,32 @@ export function registerLichessTools(server: McpServer): void {
       }
 
       const speech = getOpeningStatSpeech(masterData);
+      const output = {
+        data: masterData,
+        analysis: speech
+      }
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(
-              {
-                data: masterData,
-                analysis: speech,
-              },
-              null,
-              2
-            ),
-          },
+            text: JSON.stringify(output, null, 2),
+          },   
         ],
+        structuredContent: output
       };
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get-lichess-games",
-    "Fetch Lichess user games and opening statistics for a given position",
     {
-      fen: fenSchema,
+      description: "Fetch Lichess user games and opening statistics for a given position",
+      inputSchema: {
+        fen: fenSchema
+      },
+      annotations: {
+        openWorldHint: true
+      }
     },
     async ({ fen }) => {
       const lichessData = await getLichessOpeningStats(fen);
@@ -76,29 +85,33 @@ export function registerLichessTools(server: McpServer): void {
       }
 
       const speech = getOpeningStatSpeech(lichessData);
+
+      const output = {
+        data: lichessData,
+        analysis: speech
+      }
       return {
+        structuredContent: output,
         content: [
           {
             type: "text",
-            text: JSON.stringify(
-              {
-                data: lichessData,
-                analysis: speech,
-              },
-              null,
-              2
-            ),
+            text: JSON.stringify(output, null, 2),
           },
         ],
       };
     }
   );
 
-  server.tool(
+  server.registerTool(
     "fetch-lichess-games",
-    "Fetch the 20 most recent games for a Lichess user. Returns game details including player information, ratings, speed format, and PGN notation. Useful for analyzing a player's recent performance, openings, and game history.",
     {
-      username: z.string().describe("Lichess username to fetch games for"),
+      description: "Fetch the 20 most recent games for a Lichess user. Returns game details including player information, ratings, speed format, and PGN notation. Useful for analyzing a player's recent performance, openings, and game history.",
+      inputSchema: {
+        username: z.string().describe("Lichess username to fetch games for"),
+      },
+      annotations: {
+        openWorldHint: true,
+      }
     },
     async ({ username }) => {
       try {
@@ -184,15 +197,20 @@ export function registerLichessTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "fetch-lichess-game",
-    "Fetch a specific Lichess game in PGN format. Accepts either a full Lichess URL or a game ID. Returns the complete PGN notation with headers and moves, ready for analysis or display.",
     {
-      gameUrlOrId: z
-        .string()
-        .describe(
-          "Lichess game URL (e.g., https://lichess.org/abc12345) or game ID (e.g., abc12345)"
-        ),
+      description: "Fetch a specific Lichess game in PGN format. Accepts either a full Lichess URL or a game ID. Returns the complete PGN notation with headers and moves, ready for analysis or display.",
+      inputSchema: {
+        gameUrlOrId: z
+          .string()
+          .describe(
+            "Lichess game URL (e.g., https://lichess.org/abc12345) or game ID (e.g., abc12345)"
+          ),
+      },
+      annotations: {
+        openWorldHint: true
+      }
     },
     async ({ gameUrlOrId }) => {
       try {
@@ -281,26 +299,28 @@ export function registerLichessTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "fetch-chess-puzzle",
-    "Fetch a random chess puzzle from Lichess database. Can filter by themes and rating range. Use this to start a puzzle session with the user.",
     {
-      themes: z
-        .array(z.string())
-        .optional()
-        .describe(
-          "Array of puzzle theme tags to filter by (e.g., ['fork', 'pin', 'mateIn2'])"
-        ),
-      ratingFrom: z
-        .number()
-        .min(1000)
-        .optional()
-        .describe("Minimum puzzle rating (e.g., 1000)"),
-      ratingTo: z
-        .number()
-        .max(2500)
-        .optional()
-        .describe("Maximum puzzle rating (e.g., 2000)"),
+      description: "Fetch a random chess puzzle from Lichess database. Can filter by themes and rating range. Use this to start a puzzle session with the user.",
+      inputSchema: {
+        themes: z
+          .array(z.string())
+          .optional()
+          .describe(
+            "Array of puzzle theme tags to filter by (e.g., ['fork', 'pin', 'mateIn2'])"
+          ),
+        ratingFrom: z
+          .number()
+          .min(1000)
+          .optional()
+          .describe("Minimum puzzle rating (e.g., 1000)"),
+        ratingTo: z
+          .number()
+          .max(2500)
+          .optional()
+          .describe("Maximum puzzle rating (e.g., 2000)"),
+      }
     },
     async ({ themes, ratingFrom, ratingTo }) => {
       try {
@@ -373,29 +393,29 @@ export function registerLichessTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get-lichess-username",
-    "Get the lichess username of current mcp user",
     {
+      description: "Get the lichess username of current mcp user",
+      inputSchema: {}
     },
     async () => {
-      
       let username = LICHESS_USERNAME;
 
       if(!username || username === ""){
         return {
           content: [
-          {
-            type: "text",
-            text: JSON.stringify(
-              {
-                username: "Not Found",
-              },
-              null,
-              2
-            ),
-          },
-        ],
+            {
+              type: "text",
+              text: JSON.stringify(
+                {
+                  username: "Not Found",
+                },
+                null,
+                2
+              ),
+            },
+          ],
         }
       }
       
@@ -416,18 +436,19 @@ export function registerLichessTools(server: McpServer): void {
     }
   );
 
-  // NEW: Fetch user's studies
-  server.tool(
+  server.registerTool(
     "fetch-lichess-studies",
-    "Fetch all studies for a given Lichess user. Returns a list of studies with their IDs, names, and timestamps. Requires either LICHESS_STUDY_TOKEN environment variable or token parameter.",
     {
-      username: z
-        .string()
-        .describe("Lichess username to fetch studies for"),
-      token: z
-        .string()
-        .optional()
-        .describe("Lichess API token (optional if LICHESS_STUDY_TOKEN env var is set)"),
+      description: "Fetch all studies for a given Lichess user. Returns a list of studies with their IDs, names, and timestamps. Requires either LICHESS_STUDY_TOKEN environment variable or token parameter.",
+      inputSchema: {
+        username: z
+          .string()
+          .describe("Lichess username to fetch studies for"),
+        token: z
+          .string()
+          .optional()
+          .describe("Lichess API token (optional if LICHESS_STUDY_TOKEN env var is set)"),
+      }
     },
     async ({ username, token }) => {
       try {
@@ -535,19 +556,19 @@ export function registerLichessTools(server: McpServer): void {
     }
   );
 
-  // NEW: Fetch specific study PGN
-  server.tool(
+  server.registerTool(
     "fetch-lichess-study-pgn",
-    "Fetch a specific Lichess study in PGN format. Returns all chapters of the study as PGN. Requires either LICHESS_STUDY_TOKEN environment variable or token parameter.",
     {
-      studyId: z
-        .string()
-        .describe(
-          "Lichess study ID (e.g., WTvnkWAL from https://lichess.org/study/WTvnkWAL)"
-        ),
-
+      description: "Fetch a specific Lichess study in PGN format. Returns all chapters of the study as PGN. Requires either LICHESS_STUDY_TOKEN environment variable or token parameter.",
+      inputSchema: {
+        studyId: z
+          .string()
+          .describe(
+            "Lichess study ID (e.g., WTvnkWAL from https://lichess.org/study/WTvnkWAL)"
+          ),
+      }
     },
-    async ({ studyId}) => {
+    async ({ studyId }) => {
       try {
         const authToken = LICHESS_STUDY_TOKEN;
         if (!authToken) {

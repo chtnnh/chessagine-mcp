@@ -2,8 +2,11 @@ import { fenSchema, } from "../runner/schema.js";
 import { getChessDbNoteWord, normalizeChessDBScore, } from "../utils/utils.js";
 import { Chess } from "chess.js";
 export function registerChessDBTools(server) {
-    server.tool("get-chessdb-analysis", "Fetch position analysis and candidate moves from ChessDB", {
-        fen: fenSchema,
+    server.registerTool("get-chessdb-analysis", {
+        description: "Fetch position analysis and candidate moves from ChessDB",
+        inputSchema: {
+            fen: fenSchema
+        }
     }, async ({ fen }) => {
         const encodedFen = encodeURIComponent(fen);
         const apiUrl = `https://www.chessdb.cn/cdb.php?action=queryall&board=${encodedFen}&json=1`;
@@ -12,7 +15,7 @@ export function registerChessDBTools(server) {
             return {
                 content: [
                     {
-                        type: "text", // 
+                        type: "text",
                         text: `HTTP ${response.status}: Failed to fetch ChessDB data`,
                     },
                 ],

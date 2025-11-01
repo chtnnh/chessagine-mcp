@@ -1,6 +1,6 @@
 {
   "manifest_version": "0.2",
-  "name": "chessagine-mcp-v0.4",
+  "name": "chessagine-mcp-v0.4.1",
   "version": "1.0.6",
   "description": "Connect to ChessAgine Chess Context Protocol tools, access to stockfish analysis, chess board state, analysis of themes making LLM more chess aware, get access to chessdb, and lichess games.",
   "author": {
@@ -36,7 +36,7 @@
       "sensitive": true,
       "required": false
     },
-     "LICHESS_USERNAME": {
+    "LICHESS_USERNAME": {
       "type": "string",
       "title": "Your Lichess Username",
       "description": "Enter your Lichess Username, to help LLM pull your games and other lichess tools",
@@ -44,7 +44,7 @@
       "required": false
     }
   },
-    "tools": [
+  "tools": [
     {
       "name": "get-theme-scores",
       "description": "Analyze chess position themes (material, mobility, space, positional factors, king safety) for strategic evaluation from white or black perspective."
@@ -54,7 +54,7 @@
       "description": "Track how chess themes evolve across a sequence of moves, showing positional changes and strategic developments in variations."
     },
     {
-      "name": "get-theme-progression", 
+      "name": "get-theme-progression",
       "description": "Monitor the progression of a specific chess theme (material/mobility/space/positional/king safety) throughout a variation of moves."
     },
     {
@@ -70,7 +70,7 @@
       "description": "Perform deep Stockfish engine analysis of any chess position, providing best moves, evaluation scores, principal variations, and strategic reasoning."
     },
     {
-      "name": "get-best-move", 
+      "name": "get-best-move",
       "description": "Analyze a position and get best move"
     },
     {
@@ -128,9 +128,85 @@
   ],
   "prompts": [
     {
-      "name": "analysis",
-      "description": "Have LLM analyze the position",
-      "text": "Analyze this position using ChessAgine Mode"
+      "name": "chessagine-mode",
+      "description": "Activate ChessAgine: Advanced chess analysis with engine integration",
+      "text": "Activate ChessAgine mode for advanced chess analysis"
+    },
+    {
+      "name": "annotation-expert",
+      "description": "Become a chess annotation expert for game commentary",
+      "text": "Activate annotation expert mode for professional game commentary"
+    },
+    {
+      "name": "dashboard-designer",
+      "description": "Create beautiful chess dashboards and visualizations",
+      "text": "Activate dashboard designer mode for chess visualizations"
+    },
+    {
+      "name": "analyze-position",
+      "description": "Comprehensive position analysis using chess principles",
+      "arguments": ["fen", "side"],
+      "text": "Analyze this chess position from ${arguments.side}'s perspective: ${arguments.fen}"
+    },
+    {
+      "name": "find-tactics",
+      "description": "Search for tactical opportunities in a position",
+      "arguments": ["fen", "side"],
+      "text": "Find all tactical opportunities for ${arguments.side} in position: ${arguments.fen}"
+    },
+    {
+      "name": "opening-analysis",
+      "description": "Analyze opening position and suggest plans",
+      "arguments": ["fen"],
+      "text": "Analyze this opening position and provide strategic plans: ${arguments.fen}"
+    },
+    {
+      "name": "endgame-analysis",
+      "description": "Analyze endgame position with technique guidance",
+      "arguments": ["fen"],
+      "text": "Analyze this endgame position and provide winning/drawing technique: ${arguments.fen}"
+    },
+    {
+      "name": "annotate-game",
+      "description": "Create detailed annotations for a chess game",
+      "arguments": ["pgn"],
+      "text": "Annotate this chess game with detailed commentary: ${arguments.pgn}"
+    },
+    {
+      "name": "compare-games",
+      "description": "Compare two games to find patterns",
+      "arguments": ["pgn1", "pgn2"],
+      "text": "Compare these two chess games and analyze patterns: Game 1: ${arguments.pgn1}, Game 2: ${arguments.pgn2}"
+    },
+    {
+      "name": "explain-mistake",
+      "description": "Deep dive into why a move was a mistake",
+      "arguments": ["fen", "move", "bestMove"],
+      "text": "Explain why ${arguments.move} was a mistake in position ${arguments.fen}. Best move: ${arguments.bestMove}"
+    },
+    {
+      "name": "create-training-plan",
+      "description": "Generate a personalized chess improvement plan",
+      "arguments": ["level", "weakness", "timePerDay"],
+      "text": "Create a chess training plan for ${arguments.level} level, focusing on ${arguments.weakness}, with ${arguments.timePerDay} minutes per day"
+    },
+    {
+      "name": "build-repertoire",
+      "description": "Create an opening repertoire recommendation",
+      "arguments": ["color", "style", "timeControl"],
+      "text": "Build a ${arguments.style} opening repertoire for ${arguments.color} in ${arguments.timeControl} games"
+    },
+    {
+      "name": "identify-patterns",
+      "description": "Find recurring patterns in a position",
+      "arguments": ["fen"],
+      "text": "Identify all chess patterns (tactical, positional, strategic) in position: ${arguments.fen}"
+    },
+    {
+      "name": "start-study-session",
+      "description": "Begin a focused chess study session",
+      "arguments": ["topic", "duration"],
+      "text": "Start a ${arguments.duration}-minute focused study session on ${arguments.topic}"
     }
   ],
   "keywords": [
@@ -143,7 +219,12 @@
     "chessdb",
     "strategy",
     "tactics",
-    "engine"
+    "engine",
+    "training",
+    "puzzles",
+    "endgame",
+    "repertoire",
+    "annotation"
   ],
   "license": "MIT"
 }

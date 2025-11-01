@@ -179,17 +179,3 @@ export interface MasterGames {
   moves: Moves[];
   topGames: Game[];
 }
-
-export interface HangingPieceAnalysis {
-    hangingPieces: string[];
-    unprotectedPieces: string[];
-    semiProtectedPieces: string[];
-}
-
-export interface StockfishResponse {
-    success: boolean;
-    evaluation: number | null;
-    mate: string | null;
-    bestmove: string;
-    continuation: string;
-}

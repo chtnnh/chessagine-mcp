@@ -2,13 +2,17 @@ import { MCPStockfishHTTPClient } from "../engine/client.js";
 import { fenSchema, engineDepthSchema } from "../runner/schema.js";
 import { z } from "zod";
 export function registerLocalStockfishTools(server) {
-    let stockfishClient;
     const host = "https://mcpstockfish.vercel.app/";
-    stockfishClient = new MCPStockfishHTTPClient(host);
-    // General Stockfish analysis
-    server.tool("get-stockfish-analysis", "Analyze a chess position using Stockfish WASM engine", {
-        fen: fenSchema,
-        depth: engineDepthSchema,
+    const stockfishClient = new MCPStockfishHTTPClient(host);
+    server.registerTool("get-stockfish-analysis", {
+        description: "Analyze a chess position using Stockfish 17.1 WASM engine",
+        inputSchema: {
+            fen: fenSchema,
+            depth: engineDepthSchema,
+        },
+        annotations: {
+            openWorldHint: true
+        }
     }, async ({ fen, depth }) => {
         try {
             const isHealthy = await stockfishClient.checkHealth();
@@ -42,9 +46,15 @@ export function registerLocalStockfishTools(server) {
         }
     });
     // Get best move
-    server.tool("get-best-move", "Find the best move in a chess position using Stockfish", {
-        fen: fenSchema,
-        depth: engineDepthSchema,
+    server.registerTool("get-stockfish-best-move", {
+        description: "Find the best move in a chess position using Stockfish 17.1 WASM engine",
+        inputSchema: {
+            fen: fenSchema,
+            depth: engineDepthSchema,
+        },
+        annotations: {
+            openWorldHint: true
+        }
     }, async ({ fen, depth }) => {
         try {
             const isHealthy = await stockfishClient.checkHealth();
@@ -80,10 +90,16 @@ export function registerLocalStockfishTools(server) {
         }
     });
     // Multi-PV analysis
-    server.tool("get-stockfish-multipv-analysis", "Analyze a chess position and get multiple best move candidates", {
-        fen: fenSchema,
-        depth: engineDepthSchema,
-        numLines: z.number().min(1).max(5).describe("Number of best move lines to analyze (1-5)"),
+    server.registerTool("get-stockfish-multipv-analysis", {
+        description: "Analyze a chess position and get multiple best move candidates with Stocfish 17.1 WASM engine",
+        inputSchema: {
+            fen: fenSchema,
+            depth: engineDepthSchema,
+            numLines: z.number().min(1).max(5).describe("Number of best move lines to analyze (1-5)"),
+        },
+        annotations: {
+            openWorldHint: true
+        }
     }, async ({ fen, depth, numLines }) => {
         try {
             const isHealthy = await stockfishClient.checkHealth();
@@ -117,11 +133,17 @@ export function registerLocalStockfishTools(server) {
         }
     });
     // Batch analysis
-    server.tool("get-stockfish-batch-analysis", "Analyze multiple chess positions in batch using Stockfish", {
-        positions: z.array(z.object({
-            fen: fenSchema,
-        })).describe("Array of positions to analyze"),
-    }, async ({ positions, }) => {
+    server.registerTool("get-stockfish-batch-analysis", {
+        description: "Analyze multiple chess positions in batch using Stockfish 17.1 WASM engine",
+        inputSchema: {
+            positions: z.array(z.object({
+                fen: fenSchema,
+            })).describe("Array of positions to analyze"),
+        },
+        annotations: {
+            openWorldHint: true,
+        }
+    }, async ({ positions }) => {
         try {
             const isHealthy = await stockfishClient.checkHealth();
             if (!isHealthy) {
