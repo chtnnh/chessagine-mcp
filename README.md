@@ -10,8 +10,9 @@ A comprehensive Model Context Protocol (MCP) server that provides advanced chess
 ## Preview
 
 <p align="center">
-  <img src="/assets/screenshots/claude2.png" alt="ChessAgine"/>
+  <img src="/assets/screenshots/claude4.png" alt="ChessAgine"/>
 </p>
+(Doing interactive puzzles in Claude Desktop using MCP server)
 
 
 ## Features
@@ -64,7 +65,7 @@ Download the `chessagine-mcp.mcpb` file and install it directly in Claude Deskto
 ### Option 2: Local Development Setup
 
 #### Prerequisites
-- Node.js 20+ 
+- Node.js 22+ 
 - npm or yarn package manager
 
 #### Clone and Setup
