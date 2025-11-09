@@ -12,7 +12,7 @@ import {
   getDifficultyLevel,
   getThemeDescriptions,
 } from "../tools/puzzle.js";
-import { MasterGamesSchema } from "../types/schema.js";
+
 
 // Get token from environment variable
 const LICHESS_STUDY_TOKEN = process.env.LICHESS_API_TOKEN || "";
