@@ -1,14 +1,17 @@
 import { getBoardState } from "./state.js";
 import { STATE_THEMES } from "../types/types.js";
 import { TacticalBoard } from "../themes/tacticalBoard.js";
+import { TempoCalculator } from "../themes/temoCalculator.js";
 export class PositionScorer {
     state;
     tacticalScorer;
+    tempoScorer;
     side;
     constructor(fen, color) {
         this.state = getBoardState(fen);
         this.tacticalScorer = new TacticalBoard(fen);
         this.side = color;
+        this.tempoScorer = new TempoCalculator(this.state, this.tacticalScorer, this.side);
     }
     get getSideScorer() {
         return this.side == "w" ? this.state.white : this.state.black;
@@ -37,6 +40,8 @@ export class PositionScorer {
                 return currentSideState.squareControlScore.lightSquareAdvantage;
             case STATE_THEMES.SQAURE_CONTROL_DARK:
                 return currentSideState.squareControlScore.darkSqaureAdvantage;
+            case STATE_THEMES.TEMPO:
+                return this.tempoScorer.getTempoAdvantage();
         }
         return 0;
     }

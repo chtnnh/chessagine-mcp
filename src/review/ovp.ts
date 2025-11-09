@@ -1,33 +1,8 @@
 import { Chess, Color } from "chess.js";
 import { PositionScorer } from "../protocol/positionScorer.js";
 import { STATE_THEMES } from "../types/types.js";
+import { ThemeScore, VariationAnalysis, ThemeChange, themeNames } from "../types/types.js";
 
-export interface ThemeScore {
-    material: number;
-    mobility: number;
-    space: number;
-    positional: number;
-    kingSafety: number;
-    tactical: number;
-    darksqaureControl: number;
-    lightsqaureControl: number;
-}
-
-export interface ThemeChange {
-    theme: string;
-    initialScore: number;
-    finalScore: number;
-    change: number;
-    percentChange: number;
-}
-
-export interface VariationAnalysis {
-    themeChanges: ThemeChange[];
-    overallChange: number;
-    strongestImprovement: ThemeChange | null;
-    biggestDecline: ThemeChange | null;
-    moveByMoveScores: ThemeScore[];
-}
 
 function collectFenList(rootFen: string, moves: string[]): string[] {
     const collectedFen: string[] = [];
@@ -57,7 +32,8 @@ export function getThemeScores(fen: string, color: Color): ThemeScore {
         kingSafety: scorer.getThemeScore(STATE_THEMES.KING_SAFETY),
         tactical: scorer.getThemeScore(STATE_THEMES.TACTICAL),
         darksqaureControl: scorer.getThemeScore(STATE_THEMES.SQAURE_CONTROL_DARK),
-        lightsqaureControl: scorer.getThemeScore(STATE_THEMES.SQAURE_CONTROL_LIGHT)
+        lightsqaureControl: scorer.getThemeScore(STATE_THEMES.SQAURE_CONTROL_LIGHT),
+        tempo: scorer.getThemeScore(STATE_THEMES.TEMPO)
         
     };
 }
@@ -80,7 +56,6 @@ export function analyzeVariationThemes(rootFen: string, moves: string[], color: 
     const initialScores = moveByMoveScores[0];
     const finalScores = moveByMoveScores[moveByMoveScores.length - 1];
     
-    const themeNames: (keyof ThemeScore)[] = ['material', 'mobility', 'space', 'positional', 'kingSafety', 'tactical', 'darksqaureControl', 'lightsqaureControl'];
     const themeChanges: ThemeChange[] = themeNames.map(theme => {
         const initial = initialScores[theme];
         const final = finalScores[theme];
@@ -142,7 +117,6 @@ export function findCriticalMoments(rootFen: string, moves: string[], color: Col
         const previousScores = getThemeScores(fens[i - 1], color);
         const currentScores = getThemeScores(fens[i], color);
         
-        const themeNames: (keyof ThemeScore)[] = ['material', 'mobility', 'space', 'positional', 'kingSafety', 'tactical', 'tactical', 'darksqaureControl', 'lightsqaureControl'];
         const moveThemeChanges: ThemeChange[] = themeNames.map(theme => {
             const initial = previousScores[theme];
             const final = currentScores[theme];

@@ -1,11 +1,15 @@
 import { TacticalBoard } from "../themes/tacticalBoard.js";
+import { Chess } from "chess.js";
+import { TempoCalculator } from "../themes/temoCalculator.js";
 export class PositionPrompter {
     state;
     sections;
     tactical;
+    tempoCalculator;
     constructor(state) {
         this.state = state;
         this.tactical = new TacticalBoard(state.fen);
+        this.tempoCalculator = new TempoCalculator(this.state, this.tactical, new Chess(state.fen).turn());
         this.sections = [];
     }
     generatePrompt() {
@@ -24,6 +28,7 @@ export class PositionPrompter {
         this.addSquareColorControl();
         this.addPawnStructureAnalysis();
         this.addTacticalAnalysis();
+        this.addTempoAnalysis();
         this.addAttackDefenseDetails();
         this.sections.push("</detailed_board_analysis>");
         return this.sections.join("\n");
@@ -57,6 +62,12 @@ export class PositionPrompter {
                 .join(", ")}... (${this.state.legalMoves.length - 15} more)`);
         }
         this.sections.push("</game_status>");
+    }
+    addTempoAnalysis() {
+        const tempoDetails = this.tempoCalculator.getTempoExplanation();
+        for (const detail of tempoDetails) {
+            this.sections.push(detail);
+        }
     }
     addMaterialAnalysis() {
         this.sections.push("\n<material_analysis>");

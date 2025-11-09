@@ -21,4 +21,6 @@ export var STATE_THEMES;
     STATE_THEMES[STATE_THEMES["KING_SAFETY"] = 7] = "KING_SAFETY";
     STATE_THEMES[STATE_THEMES["MOBILITY"] = 8] = "MOBILITY";
     STATE_THEMES[STATE_THEMES["TACTICAL"] = 9] = "TACTICAL";
+    STATE_THEMES[STATE_THEMES["TEMPO"] = 10] = "TEMPO";
 })(STATE_THEMES || (STATE_THEMES = {}));
+export const themeNames = ['material', 'mobility', 'space', 'positional', 'kingSafety', 'tactical', 'darksqaureControl', 'lightsqaureControl', 'tempo'];

@@ -2,16 +2,20 @@ import { Color } from "chess.js";
 import { getBoardState } from "./state.js";
 import { BoardState, SideStateScores, STATE_THEMES } from "../types/types.js";
 import { TacticalBoard } from "../themes/tacticalBoard.js";
+import { TempoCalculator } from "../themes/temoCalculator.js";
 
 export class PositionScorer {
   private state: BoardState;
   private tacticalScorer: TacticalBoard;
+  private tempoScorer: TempoCalculator;
   private side: Color;
 
   constructor(fen: string, color: Color) {
     this.state = getBoardState(fen);
     this.tacticalScorer = new TacticalBoard(fen);
     this.side = color;
+    this.tempoScorer = new TempoCalculator(this.state, this.tacticalScorer, this.side);
+    
   }
 
   private get getSideScorer(): SideStateScores {
@@ -42,7 +46,9 @@ export class PositionScorer {
       case STATE_THEMES.SQAURE_CONTROL_LIGHT:
         return currentSideState.squareControlScore.lightSquareAdvantage;
       case STATE_THEMES.SQAURE_CONTROL_DARK:
-        return currentSideState.squareControlScore.darkSqaureAdvantage;    
+        return currentSideState.squareControlScore.darkSqaureAdvantage;
+      case STATE_THEMES.TEMPO:
+        return this.tempoScorer.getTempoAdvantage();      
     }
 
     return 0;

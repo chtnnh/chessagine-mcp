@@ -111,7 +111,8 @@ export enum STATE_THEMES {
     SQAURE_CONTROL_DARK,
     KING_SAFETY,
     MOBILITY,
-    TACTICAL
+    TACTICAL,
+    TEMPO
 }
 
 export interface SideStateScores{
@@ -179,3 +180,64 @@ export interface MasterGames {
   moves: Moves[];
   topGames: Game[];
 }
+
+export interface ThemeScore {
+    material: number;
+    mobility: number;
+    space: number;
+    positional: number;
+    kingSafety: number;
+    tactical: number;
+    darksqaureControl: number;
+    lightsqaureControl: number;
+    tempo: number;
+}
+
+export interface ThemeChange {
+    theme: string;
+    initialScore: number;
+    finalScore: number;
+    change: number;
+    percentChange: number;
+}
+
+export interface VariationAnalysis {
+    themeChanges: ThemeChange[];
+    overallChange: number;
+    strongestImprovement: ThemeChange | null;
+    biggestDecline: ThemeChange | null;
+    moveByMoveScores: ThemeScore[];
+}
+
+export interface GameReview {
+    gameInfo: {
+        white: string;
+        black: string;
+        result: string;
+    };
+    whiteAnalysis: {
+        overallThemes: VariationAnalysis;
+        criticalMoments: Array<{moveIndex: number, move: string, themeChanges: ThemeChange[]}>;
+        averageThemeScores: ThemeScore
+    };
+    blackAnalysis: {
+        overallThemes: VariationAnalysis;
+        criticalMoments: Array<{moveIndex: number, move: string, themeChanges: ThemeChange[]}>;
+        averageThemeScores: ThemeScore
+    };
+    insights: {
+        whiteBestTheme: string;
+        whiteWorstTheme: string;
+        blackBestTheme: string;
+        blackWorstTheme: string;
+        turningPoints: Array<{
+            moveNumber: number;
+            player: string;
+            move: string;
+            impact: string;
+        }>;
+    };
+}
+
+export const themeNames: (keyof ThemeScore)[] = ['material', 'mobility', 'space', 'positional', 'kingSafety', 'tactical', 'darksqaureControl', 'lightsqaureControl', 'tempo'];
+

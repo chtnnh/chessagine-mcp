@@ -10,15 +10,19 @@ import {
   SideSquareControl,
   SpaceControl,
 } from "../types/types.js";
+import { Chess } from "chess.js";
+import { TempoCalculator } from "../themes/temoCalculator.js";
 
 export class PositionPrompter {
   private state: BoardState;
   private sections: string[];
   private tactical: TacticalBoard;
+  private tempoCalculator: TempoCalculator;
 
   constructor(state: BoardState) {
     this.state = state;
     this.tactical = new TacticalBoard(state.fen);
+    this.tempoCalculator = new TempoCalculator(this.state, this.tactical, new Chess(state.fen).turn());
     this.sections = [];
   }
 
@@ -40,6 +44,7 @@ export class PositionPrompter {
     this.addSquareColorControl();
     this.addPawnStructureAnalysis();
     this.addTacticalAnalysis();
+    this.addTempoAnalysis();
     this.addAttackDefenseDetails();
 
     this.sections.push("</detailed_board_analysis>");
@@ -86,6 +91,13 @@ export class PositionPrompter {
       );
     }
     this.sections.push("</game_status>");
+  }
+
+  private addTempoAnalysis(): void {
+    const tempoDetails = this.tempoCalculator.getTempoExplanation();
+    for (const detail of tempoDetails) {
+      this.sections.push(detail);
+    }
   }
 
   private addMaterialAnalysis(): void {
