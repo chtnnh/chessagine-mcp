@@ -181,11 +181,11 @@ npm run debug      # opens MCP inspector to inspect new changes made
 ```
 
 ## Community
-- **Discord**: [Join ChessAgine community](https://discord.gg/N2J2sP9yTm)
+- **Discord**: [Join ChessAgine community](https://discord.gg/suepW7FRCY)
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License, the /themes and /protocol are under GPL. See the [LICENSE](LICENSE) file for details.
 
 ## Authors
 @jalpp
