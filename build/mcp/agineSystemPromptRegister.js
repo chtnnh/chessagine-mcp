@@ -1,6 +1,6 @@
 import { fenSchema, gamePgnSchema } from "../runner/schema.js";
 import z from "zod";
-import { agineSystemPrompt, agineDesigner, chessAgineAnnoPrompt, } from "../prompts/prompt.js";
+import { agineSystemPrompt, agineDesigner, chessAgineAnnoPrompt, agineSelfEval, } from "../prompts/prompt.js";
 export function registerAgineSystemPrompt(server) {
     // Core System Prompts
     server.registerPrompt("chessagine-mode", {
@@ -14,6 +14,21 @@ export function registerAgineSystemPrompt(server) {
                 content: {
                     type: "text",
                     text: agineSystemPrompt,
+                },
+            },
+        ],
+    }));
+    server.registerPrompt("self-eval-framework", {
+        title: "Self Eval Framework",
+        description: "Evaulate self's previous response to ensure there are no hullucination present",
+        argsSchema: {}
+    }, () => ({
+        messages: [
+            {
+                role: "assistant",
+                content: {
+                    type: "text",
+                    text: agineSelfEval,
                 },
             },
         ],

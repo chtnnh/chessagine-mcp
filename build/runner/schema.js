@@ -6,3 +6,6 @@ export const sideSchema = z.enum(["w", "b"]).describe("Side to evaluate from");
 export const engineDepthSchema = z.number().min(12).max(30).describe("Search depth for Stockfish engine");
 export const moveSchema = z.string().describe("The move to be played (in SAN or UCI format)");
 export const gamePgnSchema = z.string().describe("Game PGN");
+export const cbmGameIdSchema = z.string().describe("game ID to fetch chessboardmagic game");
+export const cbmRepIdSchema = z.string().describe("repertoire ID to fetch a repertoire from chessboardmagic");
+export const is3dSchema = z.boolean().describe("3D view of the board").optional();

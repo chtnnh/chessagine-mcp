@@ -1,8 +1,8 @@
 {
   "manifest_version": "0.2",
-  "name": "chessagine-mcp-v0.4.2",
+  "name": "chessagine-mcp-v0.4.3",
   "version": "1.0.7",
-  "description": "Connect to ChessAgine Chess Context Protocol tools, access to stockfish analysis, chess board state, analysis of themes making LLM more chess aware, get access to chessdb, and lichess games.",
+  "description": "Connect to ChessAgine Chess Context Protocol tools, access to stockfish analysis, chess board state, analysis of themes making LLM more chess aware, get access to chessdb, and lichess games, chessboardmagic.",
   "author": {
     "name": "Jalp",
     "url": "https://github.com/jalpp"
@@ -25,14 +25,15 @@
       ],
       "env": {
         "LICHESS_API_TOKEN": "${user_config.LICHESS_API_KEY}",
-        "LICHESS_USERNAME": "${user_config.LICHESS_USERNAME}"
+        "LICHESS_USERNAME": "${user_config.LICHESS_USERNAME}",
+        "CHESSBOARD_MAGIC_PAT": "${user_config.CHESSBOARD_MAGIC_PAT}"
       }
     }
   },
   "user_config": {
     "LICHESS_API_KEY": {
       "type": "string",
-      "title": "API Key",
+      "title": "Lichess Study API Key",
       "description": "Your Lichess API token with study:read permission. Get a PAT from Lichess here https://lichess.org/account/oauth/token",
       "sensitive": true,
       "required": false
@@ -42,6 +43,13 @@
       "title": "Your Lichess Username",
       "description": "Enter your Lichess Username, to help LLM pull your games and other lichess tools",
       "sensitive": false,
+      "required": false
+    },
+    "CHESSBOARD_MAGIC_PAT": {
+      "type": "string",
+      "title": "ChessBoardMagic PAT Key",
+      "description": "Your ChessBoard Magic Personal Access Token (PAT) which you get from here https://chessboardmagic.com/",
+      "sensitive": true,
       "required": false
     }
   },

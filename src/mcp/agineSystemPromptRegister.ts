@@ -5,6 +5,7 @@ import {
   agineSystemPrompt,
   agineDesigner,
   chessAgineAnnoPrompt,
+  agineSelfEval,
 } from "../prompts/prompt.js";
 
 export function registerAgineSystemPrompt(server: McpServer): void {
@@ -29,6 +30,29 @@ export function registerAgineSystemPrompt(server: McpServer): void {
       ],
     })
   );
+
+
+  server.registerPrompt(
+    "self-eval-framework",
+    {
+      title: "Self Eval Framework",
+      description: "Evaulate self's previous response to ensure there are no hullucination present",
+      argsSchema: {}
+    },
+    () => ({
+      messages: [
+        {
+          role: "assistant",
+          content: {
+            type: "text",
+            text: agineSelfEval,
+          },
+        },
+      ],
+    })
+  );
+
+
 
   server.registerPrompt(
     "question-answer-mode",

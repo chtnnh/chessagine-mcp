@@ -10,21 +10,21 @@ export const configSchema = z.object({
         .string()
         .optional()
         .describe("Lichess username for mcp user"),
+    chessboardmagicKey: z
+        .string()
+        .optional()
+        .describe("Chessboardmagic Repitore Builder PAT")
 });
 export default function createServer({ config, }) {
     const Mcpserver = new McpServer({
         name: "chessagine-mcp",
         websiteUrl: "https://www.chessagine.com/",
         version: "2.0.0",
-        capabilities: {
-            resources: {},
-            tools: {},
-            prompt: {},
-        },
     });
     console.warn(config);
     process.env.LICHESS_API_KEY = config.lichessApiKey || "";
     process.env.LICHESS_USERNAME = config.lichessUsername || "";
+    process.env.CHESSBOARD_MAGIC_PAT = config.chessboardmagicKey || "";
     registerAgine(Mcpserver);
     return Mcpserver.server;
 }

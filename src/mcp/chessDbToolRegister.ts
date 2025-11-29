@@ -11,7 +11,11 @@ export function registerChessDBTools(server: McpServer): void {
       description: "Fetch position analysis and candidate moves from ChessDB",
       inputSchema: {
         fen: fenSchema
-      }  
+      },
+      annotations: {
+        openWorldHint: true
+      }
+        
       },
       async ({ fen }) => {
         const encodedFen = encodeURIComponent(fen);
@@ -84,6 +88,103 @@ export function registerChessDBTools(server: McpServer): void {
       }
     );
     
-    
+    server.registerTool(
+      "get-chessdb-llm-analysis",
+      {
+        description: "Get LLM-powered position analysis from ChessDB. The position must exist in the ChessDB database.",
+        inputSchema: {
+          fen: fenSchema
+        },
+        annotations: {
+        openWorldHint: true
+      }
+      },
+      async ({ fen }) => {
+        const encodedFen = encodeURIComponent(fen);
+        const apiUrl = `https://www.chessdb.cn/llm.php?lang=1&action=cllm&board=${encodedFen}`;
+        
+        try {
+          const response = await fetch(apiUrl, {
+            headers: {
+              'Referer': 'https://www.chessdb.cn/',
+            }
+          });
+          
+          if (!response.ok) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `HTTP ${response.status}: Failed to fetch ChessDB LLM analysis`,
+                },
+              ],
+            };
+          }
+          
+          if (!response.body) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "No response body received from ChessDB LLM API",
+                },
+              ],
+            };
+          }
+          
+          // Read SSE stream
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let analysis = "";
+          
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split('\n');
+            
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                const data = line.slice(6).trim();
+                if (data && data !== '[DONE]') {
+                  analysis += data;
+                }
+              }
+            }
+          }
+          
+          if (!analysis) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "Position not found in ChessDB database or no analysis available.",
+                },
+              ],
+            };
+          }
+          
+          return {
+            content: [
+              {
+                type: "text",
+                text: analysis,
+              },
+            ],
+          };
+          
+        } catch (error) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error fetching ChessDB LLM analysis: ${error instanceof Error ? error.message : String(error)}`,
+              },
+            ],
+          };
+        }
+      }
+    );
     
 }
