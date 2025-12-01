@@ -1,6 +1,6 @@
 {
   "manifest_version": "0.2",
-  "name": "chessagine-mcp-v0.4.3",
+  "name": "chessagine-mcp-v0.4.4",
   "version": "1.0.7",
   "description": "Connect to ChessAgine Chess Context Protocol tools, access to stockfish analysis, chess board state, analysis of themes making LLM more chess aware, get access to chessdb, and lichess games, chessboardmagic.",
   "author": {

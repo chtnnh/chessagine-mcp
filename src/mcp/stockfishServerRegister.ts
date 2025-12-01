@@ -58,6 +58,50 @@ export function registerLocalStockfishTools(server: McpServer): void {
     }
   );
 
+  server.registerTool(
+    "fen-openingbook-lookup",
+    {
+      description: "Look up a fen in 12k positions of opening book to get name, moves information for fen",
+      inputSchema: {
+        fen: fenSchema,
+      },
+      annotations: {
+        openWorldHint: true
+      }
+    },
+    async ({ fen}) => {
+      try {
+        const isHealthy = await stockfishClient.checkHealth();
+        if (!isHealthy) {
+          throw new Error("Stockfish service is not available");
+        }
+
+        const book = await stockfishClient.getBookAnalysis(fen);
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(book, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: ${
+                error instanceof Error ? error.message : "Unknown error"
+              }`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
   // Get best move
   server.registerTool(
     "get-stockfish-best-move",

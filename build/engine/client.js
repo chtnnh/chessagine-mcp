@@ -57,6 +57,22 @@ export class MCPStockfishHTTPClient {
             throw error;
         }
     }
+    async getBookAnalysis(fen) {
+        try {
+            const response = await this.client.post('/book', { fen });
+            return response.data.book;
+        }
+        catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error;
+                const errorMessage = axiosError.response?.data?.error || axiosError.message;
+                console.error('Book analysis failed:', errorMessage);
+                throw new Error(errorMessage);
+            }
+            console.error('Book analysis failed:', error);
+            throw error;
+        }
+    }
     async analyzeBatch(positions) {
         try {
             const response = await this.client.post('/analyze-batch', { positions }, {});

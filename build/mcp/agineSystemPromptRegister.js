@@ -25,7 +25,22 @@ export function registerAgineSystemPrompt(server) {
     }, () => ({
         messages: [
             {
-                role: "assistant",
+                role: "user",
+                content: {
+                    type: "text",
+                    text: agineSelfEval,
+                },
+            },
+        ],
+    }));
+    server.registerPrompt("chessdb-commentator-mode", {
+        title: "ChessDB commentary mode",
+        description: "Provide comments on chess position using chessDB, Stockfish, themes analysis.",
+        argsSchema: {}
+    }, () => ({
+        messages: [
+            {
+                role: "user",
                 content: {
                     type: "text",
                     text: agineSelfEval,
@@ -78,7 +93,6 @@ export function registerAgineSystemPrompt(server) {
             },
         ],
     }));
-    // Position Analysis Prompts
     server.registerPrompt("analyze-position", {
         title: "Analyze Chess Position",
         description: "Comprehensive position analysis using chess principles",

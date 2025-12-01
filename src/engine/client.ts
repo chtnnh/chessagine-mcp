@@ -16,6 +16,11 @@ export interface EvaluationResult {
     lines: string[];
 }
 
+interface EcoEntry {
+  name: string;
+  moves: string;
+}
+
 
 export class MCPStockfishHTTPClient {
     private client: AxiosInstance;
@@ -79,6 +84,22 @@ export class MCPStockfishHTTPClient {
         }
     }
 
+    async getBookAnalysis(fen: string): Promise<EcoEntry> {
+        try {
+            const response = await this.client.post('/book', { fen });
+            return response.data.book;
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error as AxiosError<{ error: string }>;
+                const errorMessage = axiosError.response?.data?.error || axiosError.message;
+                console.error('Book analysis failed:', errorMessage);
+                throw new Error(errorMessage);
+            }
+            console.error('Book analysis failed:', error);
+            throw error;
+        }
+    }
+    
     async analyzeBatch(positions: BatchEvalRequest[]): Promise<Array<{ fen: string; result: EvaluationResult }>> {
         try {
             const response = await this.client.post('/analyze-batch', { positions }, {
