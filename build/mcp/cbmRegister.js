@@ -1,4 +1,4 @@
-import { cbmGameIdSchema, cbmRepIdSchema } from "../runner/schema.js";
+import { cbmGameIdSchema, cbmRepIdSchema, fenSchema } from "../runner/schema.js";
 const API_BASE = "https://api.chessboardmagic.com";
 const pat = process.env.CHESSBOARD_MAGIC_PAT;
 export function registerCBM(mcpserver) {
@@ -295,6 +295,226 @@ export function registerCBM(mcpserver) {
                         text: `Error fetching repertoire details: ${error}`,
                     },
                 ],
+            };
+        }
+    });
+    mcpserver.registerTool("get-chessboardmagic-tcec-stats", {
+        description: "Fetch TCEC (Top Chess Engine Championship) statistics for a specific chess position",
+        inputSchema: {
+            fen: fenSchema
+        },
+        annotations: {
+            openWorldHint: true,
+        },
+    }, async ({ fen }) => {
+        if (!fen) {
+            return {
+                content: [{ type: "text", text: "Missing required argument: fen" }],
+            };
+        }
+        if (!pat) {
+            return {
+                content: [{ type: "text", text: "Missing Personal Access Token (PAT)" }],
+            };
+        }
+        const url = `${API_BASE}/mcp/tcec/stats?fen=${fen}`;
+        try {
+            const response = await fetch(url, {
+                headers: { Authorization: `Bearer ${pat}` },
+            });
+            let data;
+            try {
+                data = await response.json();
+            }
+            catch {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: `Invalid JSON response (status ${response.status})`,
+                        },
+                    ],
+                };
+            }
+            if (response.status !== 200) {
+                return {
+                    content: [
+                        { type: "text", text: `API error: ${JSON.stringify(data)}` },
+                    ],
+                };
+            }
+            return {
+                content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+            };
+        }
+        catch (error) {
+            return {
+                content: [{ type: "text", text: `Error fetching TCEC stats: ${error}` }],
+            };
+        }
+    });
+    mcpserver.registerTool("get-chessboardmagic-tcec-games", {
+        description: "Fetch TCEC games that reached a specific chess position",
+        inputSchema: {
+            fen: fenSchema
+        },
+        annotations: {
+            openWorldHint: true,
+        },
+    }, async ({ fen }) => {
+        if (!fen) {
+            return {
+                content: [{ type: "text", text: "Missing required argument: fen" }],
+            };
+        }
+        if (!pat) {
+            return {
+                content: [{ type: "text", text: "Missing Personal Access Token (PAT)" }],
+            };
+        }
+        const url = `${API_BASE}/mcp/tcec/games?fen=${fen}`;
+        try {
+            const response = await fetch(url, {
+                headers: { Authorization: `Bearer ${pat}` },
+            });
+            let data;
+            try {
+                data = await response.json();
+            }
+            catch {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: `Invalid JSON response (status ${response.status})`,
+                        },
+                    ],
+                };
+            }
+            if (response.status !== 200) {
+                return {
+                    content: [
+                        { type: "text", text: `API error: ${JSON.stringify(data)}` },
+                    ],
+                };
+            }
+            return {
+                content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+            };
+        }
+        catch (error) {
+            return {
+                content: [{ type: "text", text: `Error fetching TCEC games: ${error}` }],
+            };
+        }
+    });
+    mcpserver.registerTool("get-chessboardmagic-corr-stats", {
+        description: "Fetch correspondence chess statistics for a specific chess position",
+        inputSchema: {
+            fen: fenSchema
+        },
+        annotations: {
+            openWorldHint: true,
+        },
+    }, async ({ fen }) => {
+        if (!fen) {
+            return {
+                content: [{ type: "text", text: "Missing required argument: fen" }],
+            };
+        }
+        if (!pat) {
+            return {
+                content: [{ type: "text", text: "Missing Personal Access Token (PAT)" }],
+            };
+        }
+        const url = `${API_BASE}/mcp/corr/stats?fen=${fen}`;
+        try {
+            const response = await fetch(url, {
+                headers: { Authorization: `Bearer ${pat}` },
+            });
+            let data;
+            try {
+                data = await response.json();
+            }
+            catch {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: `Invalid JSON response (status ${response.status})`,
+                        },
+                    ],
+                };
+            }
+            if (response.status !== 200) {
+                return {
+                    content: [
+                        { type: "text", text: `API error: ${JSON.stringify(data)}` },
+                    ],
+                };
+            }
+            return {
+                content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+            };
+        }
+        catch (error) {
+            return {
+                content: [{ type: "text", text: `Error fetching correspondence stats: ${error}` }],
+            };
+        }
+    });
+    mcpserver.registerTool("get-chessboardmagic-corr-games", {
+        description: "Fetch correspondence chess games that reached a specific chess position",
+        inputSchema: {
+            fen: fenSchema
+        },
+        annotations: {
+            openWorldHint: true,
+        },
+    }, async ({ fen }) => {
+        if (!fen) {
+            return {
+                content: [{ type: "text", text: "Missing required argument: fen" }],
+            };
+        }
+        if (!pat) {
+            return {
+                content: [{ type: "text", text: "Missing Personal Access Token (PAT)" }],
+            };
+        }
+        const url = `${API_BASE}/mcp/corr/games?fen=${fen}`;
+        try {
+            const response = await fetch(url, {
+                headers: { Authorization: `Bearer ${pat}` },
+            });
+            let data;
+            try {
+                data = await response.json();
+            }
+            catch {
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: `Invalid JSON response (status ${response.status})`,
+                        },
+                    ],
+                };
+            }
+            if (response.status !== 200) {
+                return {
+                    content: [
+                        { type: "text", text: `API error: ${JSON.stringify(data)}` },
+                    ],
+                };
+            }
+            return {
+                content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+            };
+        }
+        catch (error) {
+            return {
+                content: [{ type: "text", text: `Error fetching correspondence games: ${error}` }],
             };
         }
     });
