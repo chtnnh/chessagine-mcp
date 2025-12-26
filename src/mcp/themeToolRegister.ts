@@ -1,13 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import z from "zod";
 import { fenSchema, gamePgnSchema, sideSchema } from "../runner/schema.js";
-import { generateGameReview, formatGameReview } from "../review/gamereview.js";
-import { Color } from "chess.js";
-import { getThemeScores, analyzeVariationThemes, getThemeProgression, compareVariations, findCriticalMoments } from "../review/ovp.js";
-import { validColorSchema } from "../utils/utils.js";
-import { TacticalBoard } from "../themes/tacticalBoard.js";
+import { ThemeAnalysisService } from "../services/themeanalysis.js";
 
 export function registerThemeCalculationTools(server: McpServer): void {
+  const themeService = new ThemeAnalysisService();
 
   server.registerTool(
     "get-theme-scores",
@@ -22,27 +19,16 @@ export function registerThemeCalculationTools(server: McpServer): void {
       }
     },
     async ({ fen, color }) => {
-      try {
-        const validColor = validColorSchema(color);  
-        const result = getThemeScores(fen, validColor as Color); 
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error getting theme scores:`,
-            },
-          ],
-        };
-      }
+      const { data, error } = themeService.getThemeScores(fen, color);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
 
@@ -58,27 +44,16 @@ export function registerThemeCalculationTools(server: McpServer): void {
       }
     },
     async ({ fen }) => {
-      try {
-        const tactics = new TacticalBoard(fen);
-        
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(tactics.toString(), null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error getting theme scores:`,
-            },
-          ],
-        };
-      }
+      const { data, error } = themeService.getTacticalPositionSummary(fen);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
 
@@ -96,30 +71,19 @@ export function registerThemeCalculationTools(server: McpServer): void {
       }
     },
     async ({ rootFen, moves, color }) => {
-      try {
-        const validColor = validColorSchema(color);
-        const result = analyzeVariationThemes(rootFen, moves, validColor as Color);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error analyzing variation themes:`,
-            },
-          ],
-        };
-      }
+      const { data, error } = themeService.analyzeVariationThemes(rootFen, moves, color);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
-  
+
   server.registerTool(
     "get-theme-progression",
     {
@@ -142,33 +106,21 @@ export function registerThemeCalculationTools(server: McpServer): void {
       annotations: {
         openWorldHint: false
       }
-
     },
     async ({ rootFen, moves, color, theme }) => {
-      try {
-        const validColor = validColorSchema(color);  
-        const result = getThemeProgression(rootFen, moves, validColor as Color, theme);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error getting theme progression:`,
-            },
-          ],
-        };
-      }
+      const { data, error } = themeService.getThemeProgression(rootFen, moves, color, theme);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
-  
+
   server.registerTool(
     "compare-variations",
     {
@@ -188,30 +140,19 @@ export function registerThemeCalculationTools(server: McpServer): void {
       }
     },
     async ({ rootFen, variations, color }) => {
-      try {
-        const validColor = validColorSchema(color);  
-        const result = compareVariations(rootFen, variations, validColor as Color);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error comparing variations`,
-            },
-          ],
-        };
-      }
+      const { data, error } = themeService.compareVariations(rootFen, variations, color);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
-  
+
   server.registerTool(
     "find-critical-moments",
     {
@@ -227,27 +168,16 @@ export function registerThemeCalculationTools(server: McpServer): void {
       }
     },
     async ({ rootFen, moves, color, threshold = 0.5 }) => {
-      try {
-        const validColor = validColorSchema(color);  
-        const result = findCriticalMoments(rootFen, moves, validColor as Color, threshold);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error finding critical moments:`,
-            },
-          ],
-        };
-      }
+      const { data, error } = themeService.findCriticalMoments(rootFen, moves, color, threshold);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
 
@@ -273,77 +203,16 @@ export function registerThemeCalculationTools(server: McpServer): void {
       }
     },
     async ({ pgn, criticalMomentThreshold = 0.5, format = "text" }) => {
-      try {
-        const review = generateGameReview(pgn, criticalMomentThreshold);
-        
-        if (format === "json") {
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(review, null, 2),
-              },
-            ],
-          };
-        }
-        
-        const formattedReview = formatGameReview(review);
-        
-        let detailedOutput = formattedReview + "\n\n";
-        
-        detailedOutput += "=== DETAILED THEME CHANGES ===\n\n";
-        detailedOutput += "WHITE:\n";
-        review.whiteAnalysis.overallThemes.themeChanges.forEach(tc => {
-          detailedOutput += `  ${tc.theme}: ${tc.initialScore.toFixed(2)} → ${tc.finalScore.toFixed(2)} `;
-          detailedOutput += `(${tc.change > 0 ? '+' : ''}${tc.change.toFixed(2)}, ${tc.percentChange.toFixed(1)}%)\n`;
-        });
-        
-        detailedOutput += "\nBLACK:\n";
-        review.blackAnalysis.overallThemes.themeChanges.forEach(tc => {
-          detailedOutput += `  ${tc.theme}: ${tc.initialScore.toFixed(2)} → ${tc.finalScore.toFixed(2)} `;
-          detailedOutput += `(${tc.change > 0 ? '+' : ''}${tc.change.toFixed(2)}, ${tc.percentChange.toFixed(1)}%)\n`;
-        });
-        
-        if (review.whiteAnalysis.criticalMoments.length > 0) {
-          detailedOutput += "\n=== WHITE'S CRITICAL MOMENTS ===\n";
-          review.whiteAnalysis.criticalMoments.forEach((cm, i) => {
-            const moveNum = Math.floor(cm.moveIndex / 2) + 1;
-            detailedOutput += `\nMove ${moveNum}: ${cm.move}\n`;
-            cm.themeChanges.forEach(tc => {
-              detailedOutput += `  ${tc.theme}: ${tc.change > 0 ? '+' : ''}${tc.change.toFixed(2)}\n`;
-            });
-          });
-        }
-        
-        if (review.blackAnalysis.criticalMoments.length > 0) {
-          detailedOutput += "\n=== BLACK'S CRITICAL MOMENTS ===\n";
-          review.blackAnalysis.criticalMoments.forEach((cm, i) => {
-            const moveNum = Math.floor(cm.moveIndex / 2) + 1;
-            detailedOutput += `\nMove ${moveNum}: ${cm.move}\n`;
-            cm.themeChanges.forEach(tc => {
-              detailedOutput += `  ${tc.theme}: ${tc.change > 0 ? '+' : ''}${tc.change.toFixed(2)}\n`;
-            });
-          });
-        }
-        
-        return {
-          content: [
-            {
-              type: "text",
-              text: detailedOutput,
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error generating game review: ${error instanceof Error ? error.message : 'Invalid PGN or analysis error'}`,
-            },
-          ],
-        };
-      }
+      const { data, error } = themeService.generateGameReview(pgn, criticalMomentThreshold, format);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || (typeof data === 'string' ? data : JSON.stringify(data, null, 2)),
+          },
+        ],
+      };
     }
   );
 }
