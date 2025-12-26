@@ -1,11 +1,11 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { cbmGameIdSchema, cbmRepIdSchema, fenSchema } from "../runner/schema.js";
+import { ChessBoardMagicService } from "../services/cbm.js";
 
-const API_BASE = "https://api.chessboardmagic.com";
-
-const pat = process.env.CHESSBOARD_MAGIC_PAT;
 
 export function registerCBM(mcpserver: McpServer) {
+  const cbmService = new ChessBoardMagicService();
+
   mcpserver.registerTool(
     "get-chessboardmagic-repertoires",
     {
@@ -17,69 +17,16 @@ export function registerCBM(mcpserver: McpServer) {
       }
     },
     async () => {
-      if (!pat) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Missing Personal Access Token (PAT)",
-            },
-          ],
-        };
-      }
-
-      const url = `${API_BASE}/mcp/repertoires`;
-
-      try {
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${pat}`,
+      const { data, error } = await cbmService.getRepertoires();
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
           },
-        });
-
-        let data;
-        try {
-          data = await response.json();
-        } catch {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Invalid JSON response (status ${response.status})`,
-              },
-            ],
-          };
-        }
-
-        if (response.status !== 200) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `API error: ${JSON.stringify(data)}`,
-              },
-            ],
-          };
-        }
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(data, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error fetching repertoires: ${error}`,
-            },
-          ],
-        };
-      }
+        ],
+      };
     }
   );
 
@@ -94,69 +41,16 @@ export function registerCBM(mcpserver: McpServer) {
       }
     },
     async () => {
-      if (!pat) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Missing Personal Access Token (PAT)",
-            },
-          ],
-        };
-      }
-
-      const url = `${API_BASE}/mcp/games`;
-
-      try {
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${pat}`,
+      const { data, error } = await cbmService.getGames();
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
           },
-        });
-
-        let data;
-        try {
-          data = await response.json();
-        } catch {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Invalid JSON response (status ${response.status})`,
-              },
-            ],
-          };
-        }
-
-        if (response.status !== 200) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `API error: ${JSON.stringify(data)}`,
-              },
-            ],
-          };
-        }
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(data, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error fetching games: ${error}`,
-            },
-          ],
-        };
-      }
+        ],
+      };
     }
   );
 
@@ -173,80 +67,16 @@ export function registerCBM(mcpserver: McpServer) {
       }
     },
     async ({ gameId }) => {
-      if (!gameId) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Missing required argument: gameId",
-            },
-          ],
-        };
-      }
-
-      if (!pat) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Missing Personal Access Token (PAT)",
-            },
-          ],
-        };
-      }
-
-      const url = `${API_BASE}/mcp/games/${gameId}`;
-
-      try {
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${pat}`,
+      const { data, error } = await cbmService.getGameDetails(gameId);
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
           },
-        });
-
-        let data;
-        try {
-          data = await response.json();
-        } catch {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Invalid JSON response (status ${response.status})`,
-              },
-            ],
-          };
-        }
-
-        if (response.status !== 200) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `API error: ${JSON.stringify(data)}`,
-              },
-            ],
-          };
-        }
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(data, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error fetching game details: ${error}`,
-            },
-          ],
-        };
-      }
+        ],
+      };
     }
   );
 
@@ -263,84 +93,20 @@ export function registerCBM(mcpserver: McpServer) {
       }
     },
     async ({ repertoireId }: { repertoireId: string }) => {
-      if (!repertoireId) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Missing required argument: repertoireId",
-            },
-          ],
-        };
-      }
-
-      if (!pat) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Missing Personal Access Token (PAT)",
-            },
-          ],
-        };
-      }
-
-      const url = `${API_BASE}/mcp/repertoires/${repertoireId}`;
-
-      try {
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${pat}`,
+      const { data, error } = await cbmService.getRepertoireDetails(repertoireId);
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
           },
-        });
-
-        let data;
-        try {
-          data = await response.json();
-        } catch {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Invalid JSON response (status ${response.status})`,
-              },
-            ],
-          };
-        }
-
-        if (response.status !== 200) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `API error: ${JSON.stringify(data)}`,
-              },
-            ],
-          };
-        }
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(data, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error fetching repertoire details: ${error}`,
-            },
-          ],
-        };
-      }
+        ],
+      };
     }
   );
 
-    mcpserver.registerTool(
+  mcpserver.registerTool(
     "get-chessboardmagic-tcec-stats",
     {
       description:
@@ -353,55 +119,16 @@ export function registerCBM(mcpserver: McpServer) {
       },
     },
     async ({ fen }: { fen: string }) => {
-      if (!fen) {
-        return {
-          content: [{ type: "text", text: "Missing required argument: fen" }],
-        };
-      }
-
-      if (!pat) {
-        return {
-          content: [{ type: "text", text: "Missing Personal Access Token (PAT)" }],
-        };
-      }
-
-      const url = `${API_BASE}/mcp/tcec/stats?fen=${fen}`;
-
-      try {
-        const response = await fetch(url, {
-          headers: { Authorization: `Bearer ${pat}` },
-        });
-
-        let data;
-        try {
-          data = await response.json();
-        } catch {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Invalid JSON response (status ${response.status})`,
-              },
-            ],
-          };
-        }
-
-        if (response.status !== 200) {
-          return {
-            content: [
-              { type: "text", text: `API error: ${JSON.stringify(data)}` },
-            ],
-          };
-        }
-
-        return {
-          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
-        };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: `Error fetching TCEC stats: ${error}` }],
-        };
-      }
+      const { data, error } = await cbmService.getTcecStats(fen);
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
 
@@ -418,55 +145,16 @@ export function registerCBM(mcpserver: McpServer) {
       },
     },
     async ({ fen }: { fen: string }) => {
-      if (!fen) {
-        return {
-          content: [{ type: "text", text: "Missing required argument: fen" }],
-        };
-      }
-
-      if (!pat) {
-        return {
-          content: [{ type: "text", text: "Missing Personal Access Token (PAT)" }],
-        };
-      }
-
-      const url = `${API_BASE}/mcp/tcec/games?fen=${fen}`;
-
-      try {
-        const response = await fetch(url, {
-          headers: { Authorization: `Bearer ${pat}` },
-        });
-
-        let data;
-        try {
-          data = await response.json();
-        } catch {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Invalid JSON response (status ${response.status})`,
-              },
-            ],
-          };
-        }
-
-        if (response.status !== 200) {
-          return {
-            content: [
-              { type: "text", text: `API error: ${JSON.stringify(data)}` },
-            ],
-          };
-        }
-
-        return {
-          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
-        };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: `Error fetching TCEC games: ${error}` }],
-        };
-      }
+      const { data, error } = await cbmService.getTcecGames(fen);
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
 
@@ -483,55 +171,16 @@ export function registerCBM(mcpserver: McpServer) {
       },
     },
     async ({ fen }: { fen: string }) => {
-      if (!fen) {
-        return {
-          content: [{ type: "text", text: "Missing required argument: fen" }],
-        };
-      }
-
-      if (!pat) {
-        return {
-          content: [{ type: "text", text: "Missing Personal Access Token (PAT)" }],
-        };
-      }
-
-      const url = `${API_BASE}/mcp/corr/stats?fen=${fen}`;
-
-      try {
-        const response = await fetch(url, {
-          headers: { Authorization: `Bearer ${pat}` },
-        });
-
-        let data;
-        try {
-          data = await response.json();
-        } catch {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Invalid JSON response (status ${response.status})`,
-              },
-            ],
-          };
-        }
-
-        if (response.status !== 200) {
-          return {
-            content: [
-              { type: "text", text: `API error: ${JSON.stringify(data)}` },
-            ],
-          };
-        }
-
-        return {
-          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
-        };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: `Error fetching correspondence stats: ${error}` }],
-        };
-      }
+      const { data, error } = await cbmService.getCorrStats(fen);
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
 
@@ -548,59 +197,16 @@ export function registerCBM(mcpserver: McpServer) {
       },
     },
     async ({ fen }: { fen: string }) => {
-      if (!fen) {
-        return {
-          content: [{ type: "text", text: "Missing required argument: fen" }],
-        };
-      }
-
-      if (!pat) {
-        return {
-          content: [{ type: "text", text: "Missing Personal Access Token (PAT)" }],
-        };
-      }
-
-      const url = `${API_BASE}/mcp/corr/games?fen=${fen}`;
-
-      try {
-        const response = await fetch(url, {
-          headers: { Authorization: `Bearer ${pat}` },
-        });
-
-        let data;
-        try {
-          data = await response.json();
-        } catch {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Invalid JSON response (status ${response.status})`,
-              },
-            ],
-          };
-        }
-
-        if (response.status !== 200) {
-          return {
-            content: [
-              { type: "text", text: `API error: ${JSON.stringify(data)}` },
-            ],
-          };
-        }
-
-        return {
-          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
-        };
-      } catch (error) {
-        return {
-          content: [{ type: "text", text: `Error fetching correspondence games: ${error}` }],
-        };
-      }
+      const { data, error } = await cbmService.getCorrGames(fen);
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
-
-
-
-  
 }
