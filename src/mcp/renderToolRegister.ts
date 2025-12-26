@@ -1,10 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { fenSchema, is3dSchema } from "../runner/schema.js";
-import { sideSchema } from "../runner/schema.js";
-import { viewBoardArtifact } from "../render/chessBoardRender.js";
-import { gameRenderHtml } from "../render/gameRender.js";
+import { fenSchema, is3dSchema, sideSchema } from "../runner/schema.js";
+import { ChessRenderingService } from "../services/render.js";
 
 export function registerRenderingTools(server: McpServer): void {
+  const renderingService = new ChessRenderingService();
+
   server.registerTool(
     "generate-chess-board-view-artificat-html",
     {
@@ -19,40 +19,25 @@ export function registerRenderingTools(server: McpServer): void {
       }
     },
     async ({ fen, side, is3d }) => {
-      try {
-        const fullFen = fen.includes(' ') ? fen : `${fen} ${side} KQkq - 0 1`;
-        
-        const artifactHtml = viewBoardArtifact(fullFen, side, is3d);
-  
+      const { data, error } = renderingService.generateBoardView(fen, side, is3d);
+
+      if (error) {
         return {
           content: [
             {
               type: "text",
-              text: `Chess position rendered. FEN: ${fullFen}\n\nUse the artifact above to view the interactive chess board.`,
-            },
-            {
-              type: "resource",
-              resource: {
-                uri: `data:text/html;base64,${Buffer.from(artifactHtml).toString('base64')}`,
-                mimeType: "text/html",
-                text: artifactHtml
-              }
-            }
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error rendering chess board: ${error}`,
+              text: error,
             },
           ],
         };
       }
+
+      return {
+        content: renderingService.createResourceContent(data!.html, data!.message),
+      };
     }
   );
-  
+
   server.registerTool(
     "generate-dynamic-gameview-html",
     {
@@ -63,35 +48,22 @@ export function registerRenderingTools(server: McpServer): void {
       }
     },
     async () => {
-      try {
-        const artifactHtml = gameRenderHtml;
-  
+      const { data, error } = renderingService.generateGameView();
+
+      if (error) {
         return {
           content: [
             {
               type: "text",
-              text: `Chess positions rendered. Use the artifact above to view the interactive chess board.`,
-            },
-            {
-              type: "resource",
-              resource: {
-                uri: `data:text/html;base64,${Buffer.from(artifactHtml).toString('base64')}`,
-                mimeType: "text/html",
-                text: artifactHtml
-              }
-            }
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error rendering chess board: ${error}`,
+              text: error,
             },
           ],
         };
       }
+
+      return {
+        content: renderingService.createResourceContent(data!.html, data!.message),
+      };
     }
   );
 }

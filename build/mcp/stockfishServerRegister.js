@@ -1,9 +1,8 @@
-import { MCPStockfishHTTPClient } from "../engine/client.js";
+import { StockfishService } from "../services/sfengine.js";
 import { fenSchema, engineDepthSchema } from "../runner/schema.js";
 import { z } from "zod";
 export function registerLocalStockfishTools(server) {
-    const host = "https://mcpstockfish.vercel.app/";
-    const stockfishClient = new MCPStockfishHTTPClient(host);
+    const stockfishClient = new StockfishService();
     server.registerTool("get-stockfish-analysis", {
         description: "Analyze a chess position using Stockfish 17.1 WASM engine",
         inputSchema: {

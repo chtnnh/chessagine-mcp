@@ -1,13 +1,11 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { MCPStockfishHTTPClient } from "../engine/client.js";
+import { StockfishService } from "../services/sfengine.js";
 import { fenSchema, engineDepthSchema } from "../runner/schema.js";
 import { z } from "zod";
 
 export function registerLocalStockfishTools(server: McpServer): void {
-
-  const host = "https://mcpstockfish.vercel.app/";
-
-  const stockfishClient = new MCPStockfishHTTPClient(host);
+  
+  const stockfishClient = new StockfishService();
 
   server.registerTool(
     "get-stockfish-analysis",

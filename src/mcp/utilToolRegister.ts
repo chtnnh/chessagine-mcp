@@ -1,12 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getKnowledgeBase } from "../tools/knowlegebase.js";
-import { moveToFenMap, PROMPT_CATEGORIES } from "../utils/utils.js";
-import { PUZZLE_THEMES } from "../tools/puzzle.js";
 import { gamePgnSchema } from "../runner/schema.js";
-import { collectFensFromGame } from "../utils/utils.js";
 import z from "zod";
+import { ChessUtilsService } from "../services/util.js";
 
 export function registerUtilsTools(server: McpServer) {
+  const utilsService = new ChessUtilsService();
 
   server.registerTool(
     "get-chess-knowledgebase",
@@ -15,26 +13,16 @@ export function registerUtilsTools(server: McpServer) {
       inputSchema: {}
     },
     async () => {
-      try {
-        const knowledge = getKnowledgeBase();
-        return {
-          content: [
-            {
-              type: "text",
-              text: knowledge,
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error getting chess knowledge base:`,
-            },
-          ],
-        };
-      }
+      const { data, error } = utilsService.getKnowledgeBase();
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || data,
+          },
+        ],
+      };
     }
   );
 
@@ -45,23 +33,19 @@ export function registerUtilsTools(server: McpServer) {
       inputSchema: {}
     },
     async () => {
-      const categories = Object.entries(PROMPT_CATEGORIES).map(([key, value]) => ({
-        id: key,
-        name: value.name,
-        promptCount: value.prompts.length
-      }));
+      const { data, error } = utilsService.getStarterPrompts();
 
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(categories, null, 2)
+            text: error || JSON.stringify(data, null, 2)
           }
         ],
       };
     }
   );
-      
+
   server.registerTool(
     "get-puzzle-themes",
     {
@@ -69,42 +53,16 @@ export function registerUtilsTools(server: McpServer) {
       inputSchema: {}
     },
     async () => {
-      try {
-        const themes = PUZZLE_THEMES.map(theme => ({
-          tag: theme.tag,
-          description: theme.description,
-        }));
+      const { data, error } = utilsService.getPuzzleThemes();
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({
-                totalThemes: themes.length,
-                themes: themes,
-                popularThemes: [
-                  "fork", "pin", "skewer", "discoveredAttack",
-                  "mateIn1", "mateIn2", "mateIn3",
-                  "hangingPiece", "sacrifice", "deflection"
-                ],
-                difficultyThemes: [
-                  "mateIn1", "mateIn2", "mateIn3", "mateIn4", "mateIn5",
-                  "short", "long", "veryLong"
-                ],
-              }, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error getting puzzle themes: ${error}`,
-            },
-          ],
-        };
-      }
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
 
@@ -117,29 +75,16 @@ export function registerUtilsTools(server: McpServer) {
       }
     },
     async ({ pgn }) => {
-      try {
-        const fens = collectFensFromGame(pgn)
+      const { data, error } = utilsService.parsePgnIntoFens(pgn);
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({
-                fens: fens
-              }, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `invalid PGN`,
-            },
-          ],
-        };
-      }
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
 
@@ -153,33 +98,16 @@ export function registerUtilsTools(server: McpServer) {
       }
     },
     async ({ pgn, isAfter }) => {
-      try {
-        const fenMap = moveToFenMap(pgn, isAfter);
+      const { data, error } = utilsService.getFenMapLookup(pgn, isAfter);
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({
-                fenMap: fenMap,
-                moveCount: Object.keys(fenMap).length,
-                mappingType: isAfter ? "after move" : "before move"
-              }, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error generating move-to-FEN map: ${error}`,
-            },
-          ],
-        };
-      }
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
-
 }
-

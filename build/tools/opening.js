@@ -1,4 +1,4 @@
-export const getOpeningStats = async (fen) => {
+export const getLichessMasterOpeningStats = async (fen) => {
     try {
         const masterEndpoint = `https://explorer.lichess.ovh/masters?fen=${fen}&moves=12&topGames=15`;
         const response = await fetch(masterEndpoint);
@@ -28,7 +28,7 @@ export const getLichessOpeningStats = async (fen) => {
         return null;
     }
 };
-export const getOpeningStatSpeech = (masterData) => {
+export const getLLMTranslator = (masterData) => {
     const { opening, white, draws, black, moves, topGames } = masterData;
     const totalGames = (white ?? 0) + (draws ?? 0) + (black ?? 0);
     if (totalGames === 0) {

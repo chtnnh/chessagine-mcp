@@ -5,7 +5,7 @@
   <img src="/icon.png" alt="ChessAgine" width="200"/>
 </p>
 
-A comprehensive Model Context Protocol (MCP) server that provides advanced chess analysis capabilities by implementing [Chess Context Protocol Server](https://github.com/jalpp/chessagineweb/tree/main/chessContextProtocol) and integrating Stockfish engine evaluation, positional theme analysis, opening databases, puzzle training, game visualization, and chess knowledge for enhanced chess understanding and gameplay improvement.
+A comprehensive Model Context Protocol (MCP) server that provides advanced chess analysis capabilities by implementing [Chess Context Protocol Server](https://github.com/jalpp/chessagineweb/tree/main/chessContextProtocol) and integrating Stockfish engine evaluation, neural net Maia2/Lc0 policy eval, positional theme analysis, opening databases, puzzle training, game visualization, and chess knowledge for enhanced chess understanding and gameplay improvement.
 
 ## Preview
 
@@ -19,6 +19,7 @@ A comprehensive Model Context Protocol (MCP) server that provides advanced chess
 
 ### 🔧 Core Analysis Tools
 - **Stockfish Integration**: Deep engine analysis with configurable search depth
+- **Neural Network Integration:** Give LLM access to chess neural net policy and evals
 - **Theme Analysis**: Evaluate material, mobility, space, positional factors, and king safety
 - **Variation Analysis**: Compare multiple lines and track positional changes
 - **Move Validation**: Check move legality and generate board state descriptions
@@ -103,74 +104,6 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
-### Easy setup
-
-Follow Option 1 and upload the generated mcpb file to Claude Desktop directly.
-
-## Usage Examples
-
-### Basic Position Analysis
-```
-Analyze this position: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
-```
-
-### Visual Board Display
-```
-Show me the board for this position: r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3
-```
-
-### Game Review
-```
-Review this game and identify critical moments:
-[Event "Casual Game"]
-[White "Player1"]
-[Black "Player2"]
-1. e4 e5 2. Nf3 Nc6 3. Bb5 a6...
-```
-
-### Puzzle Training
-```
-Give me a tactical puzzle rated between 1500-1800 with a fork theme
-```
-
-### Fetch User Games
-```
-Show me the recent games for Lichess user "Magnus_Carlsen"
-```
-
-### Interactive Game Viewer
-```
-Create an interactive viewer for this game: https://lichess.org/abc12345
-```
-
-### Opening Exploration
-```
-What are the master games for the Sicilian Defense after 1.e4 c5 2.Nf3 d6?
-```
-
-### Engine Analysis
-```
-Run Stockfish analysis on this position at depth 15: r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 4 5
-```
-
-### Variation Comparison
-```
-Compare these variations from the starting position:
-1. e4 e5 2.Nf3 Nc6 3.Bb5
-2. e4 e5 2.Nf3 Nc6 3.Bc4
-3. e4 e5 2.Nf3 Nc6 3.d4
-```
-
-### Theme Analysis
-```
-Analyze how the king safety theme changes in this line: 1.e4 e5 2.f4 exf4 3.Bc4 Qh4+ 4.Kf1
-```
-
-## Tools & Credits
-
-See ```tools.md``` for detailed breakdown on tools and their descriptions
-
-## Development
 
 ### Dev commands
 

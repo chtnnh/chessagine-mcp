@@ -1,6 +1,6 @@
 import { MasterGames } from "../types/types.js";
 
-export const getOpeningStats = async (fen: string): Promise<MasterGames | null> => {
+export const getLichessMasterOpeningStats = async (fen: string): Promise<MasterGames | null> => {
   try {
     const masterEndpoint = `https://explorer.lichess.ovh/masters?fen=${fen}&moves=12&topGames=15`;
     const response = await fetch(masterEndpoint);
@@ -30,7 +30,7 @@ export const getLichessOpeningStats = async (fen: string): Promise<MasterGames |
   }
 };
 
-export const getOpeningStatSpeech = (masterData: MasterGames): string => {
+export const getLLMTranslator = (masterData: MasterGames): string => {
   const { opening, white, draws, black, moves, topGames } = masterData;
 
   const totalGames = (white ?? 0) + (draws ?? 0) + (black ?? 0);
