@@ -3,7 +3,7 @@ import z from "zod";
 import { fenSchema, gamePgnSchema, sideSchema } from "../runner/schema.js";
 import { ThemeAnalysisService } from "../services/themeanalysis.js";
 
-export function registerThemeCalculationTools(server: McpServer): void {
+export function registerThemeAnalysisTools(server: McpServer): void {
   const themeService = new ThemeAnalysisService();
 
   server.registerTool(

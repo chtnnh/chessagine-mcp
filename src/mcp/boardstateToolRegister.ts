@@ -3,7 +3,7 @@ import z from "zod";
 import { fenSchema, moveSchema } from "../runner/schema.js";
 import { BoardStateService } from "../services/boardstate.js";
 
-export function registerStateTools(server: McpServer): void {
+export function registerBoardStateTools(server: McpServer): void {
   const stateService = new BoardStateService();
 
   server.registerTool(
