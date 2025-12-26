@@ -1,20 +1,20 @@
-import { registerAgineSystemPrompt } from "./agineSystemPromptRegister.js";
 import { registerLichessTools } from "./lichessToolRegister.js";
 import { registerRenderingTools } from "./renderToolRegister.js";
-import { registerStateTools } from "./stateToolRegister.js";
-import { registerThemeCalculationTools } from "./themeToolRegister.js";
+import { registerBoardStateTools } from "./boardstateToolRegister.js";
+import { registerThemeAnalysisTools } from "./themeToolRegister.js";
 import { registerUtilsTools } from "./utilToolRegister.js";
 import { registerLocalStockfishTools } from "./stockfishServerRegister.js";
+import { registerCBM } from "./cbmToolRegister.js";
 import { registerChessDBTools } from "./chessDbToolRegister.js";
-import { registerCBM } from "./cbmRegister.js";
+import { registerNeuralNetTools } from "./neuralNetToolRegister.js";
 export function registerAgine(server) {
-    registerAgineSystemPrompt(server);
     registerLichessTools(server);
     registerRenderingTools(server);
-    registerStateTools(server);
-    registerChessDBTools(server);
-    registerLocalStockfishTools(server);
-    registerThemeCalculationTools(server);
-    registerUtilsTools(server);
+    registerBoardStateTools(server);
     registerCBM(server);
+    registerLocalStockfishTools(server);
+    registerThemeAnalysisTools;
+    registerUtilsTools(server);
+    registerChessDBTools(server);
+    registerNeuralNetTools(server);
 }
