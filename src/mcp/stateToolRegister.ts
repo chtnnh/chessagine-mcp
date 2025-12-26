@@ -1,12 +1,11 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getBoardState, calculateDeep } from "../protocol/state.js";
 import z from "zod";
-import { fenSchema } from "../runner/schema.js";
-import { moveSchema } from "../runner/schema.js";
-import { PositionPrompter } from "../protocol/positionPrompter.js";
-
+import { fenSchema, moveSchema } from "../runner/schema.js";
+import { BoardStateService } from "../services/boardstate.js";
 
 export function registerStateTools(server: McpServer): void {
+  const stateService = new BoardStateService();
+
   server.registerTool(
     "is-legal-move",
     {
@@ -20,52 +19,19 @@ export function registerStateTools(server: McpServer): void {
       }
     },
     async ({ fen, move }) => {
-      try {
-        const boardState = getBoardState(fen);
-        if (!boardState) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify({ isLegal: false, message: "Invalid FEN string" }, null, 2),
-              },
-            ],
-          };
-        }
-        const legalMoves = boardState.legalMoves || [];
-        const moveToCheck = move.trim();
-        const isLegal =
-          legalMoves.includes(moveToCheck) ||
-          legalMoves.map((m: string) => m.toLowerCase()).includes(moveToCheck.toLowerCase());
-        
-        const result = {
-          isLegal,
-          message: isLegal
-            ? "Move is legal."
-            : "Move is not legal in this position.",
-        };
-        
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({ isLegal: false, message: "Error checking move legality." }, null, 2),
-            },
-          ],
-        };
-      }
+      const { data, error } = stateService.checkLegalMove(fen, move);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: error || JSON.stringify(data, null, 2),
+          },
+        ],
+      };
     }
   );
-  
+
   server.registerTool(
     "get-boardstate-for-move",
     {
@@ -79,46 +45,31 @@ export function registerStateTools(server: McpServer): void {
       }
     },
     async ({ fen, move }) => {
-      try {
-        const boardState = calculateDeep(fen, move);
-        if (!boardState || !boardState.validfen) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: "Invalid move or FEN. Cannot generate board state prompt.",
-              },
-            ],
-          };
-        }
-        
-        const prompt = new PositionPrompter(boardState).generatePrompt();
+      const { data, error } = stateService.getBoardStateForMove(fen, move);
+
+      if (error) {
         return {
-          structuredContent: {
-            state: boardState,
-            description: prompt
-          },
           content: [
             {
               type: "text",
-              text: prompt,
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          structuredContent: {
-            state: {},
-            description: "error generating board state"
-          },
-          content: [
-            {
-              type: "text",
-              text: `Error generating board state prompt:`,
+              text: error,
             },
           ],
         };
       }
+
+      return {
+        structuredContent: {
+          state: data!.state,
+          description: data!.description
+        },
+        content: [
+          {
+            type: "text",
+            text: data!.description,
+          },
+        ],
+      };
     }
   );
 
@@ -133,44 +84,32 @@ export function registerStateTools(server: McpServer): void {
         openWorldHint: false,
       }
     },
-    async ({ fen}) => {
-      try {
-        const boardState = getBoardState(fen);
-        if (!boardState || !boardState.validfen) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: "Invalid move or FEN. Cannot generate board state prompt.",
-              },
-            ],
-          };
-        }
-        
-        const prompt = new PositionPrompter(boardState).generatePrompt();
+    async ({ fen }) => {
+      const { data, error } = stateService.getBoardStateForFen(fen);
+
+      if (error) {
         return {
-          structuredContent: {
-            state: boardState,
-            description: prompt
-          },
           content: [
             {
               type: "text",
-              text: prompt,
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          
-          content: [
-            {
-              type: "text",
-              text: `Error generating board state prompt:`,
+              text: error,
             },
           ],
         };
       }
+
+      return {
+        structuredContent: {
+          state: data!.state,
+          description: data!.description
+        },
+        content: [
+          {
+            type: "text",
+            text: data!.description,
+          },
+        ],
+      };
     }
   );
 }
