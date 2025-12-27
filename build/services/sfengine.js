@@ -1,7 +1,7 @@
 import axios from 'axios';
 export class StockfishService {
     client;
-    BASE_URL = "https://mcpstockfish.vercel.app/";
+    BASE_URL = "https://stockfish-service-717993082875.us-central1.run.app";
     constructor() {
         this.client = axios.create({
             baseURL: this.BASE_URL,

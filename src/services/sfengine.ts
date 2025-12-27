@@ -24,7 +24,7 @@ interface EcoEntry {
 
 export class StockfishService {
     private client: AxiosInstance;
-    private BASE_URL: string = "https://mcpstockfish.vercel.app/";
+    private BASE_URL: string = "https://stockfish-service-717993082875.us-central1.run.app";
 
     constructor() {
         this.client = axios.create({
