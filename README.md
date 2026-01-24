@@ -4,16 +4,7 @@
   <img src="/icon.png" alt="ChessAgine" width="200"/>
 </p>
 
-
 ChessAgine MCP acts as a chess layer behind LLMs, it allows LLMs to sit on top of chess engines, databases, common APIs to smartly chess queries.
-
-## Preview
-
-<p align="center">
-  <img src="/assets/screenshots/claude4.png" alt="ChessAgine"/>
-</p>
-(Doing interactive puzzles in Claude Desktop using MCP server)
-
 
 ## Installation
 
