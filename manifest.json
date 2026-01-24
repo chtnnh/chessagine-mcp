@@ -8,11 +8,6 @@
     "url": "https://github.com/jalpp"
   },
   "icon": "icon.png",
-  "screenshots": [
-    "assets/screenshots/claude2.png",
-    "assets/screenshots/claude3.png",
-    "assets/screenshots/claude4.png"
-  ],
   "documentation": "https://github.com/jalpp/chessagine-mcp",
   "support": "https://discord.gg/N2J2sP9yTm",
   "server": {
