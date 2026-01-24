@@ -14,23 +14,22 @@
   "scripts": {
     "build:mcp": "tsc && chmod +x build/runner/stdio.js && mcpb pack",
     "debug": "npx @modelcontextprotocol/inspector node build/runner/stdio.js",
-    "start": "node build/runner/stdio.js"
+    "start": "node build/runner/stdio.js",
+    "clean": "rm -rf build"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jalp",
   "license": "MIT & GPL",
   "engines": {
     "node": ">=20.9.0"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.1",
-    "async-mutex": "^0.5.0",
     "axios": "^1.13.1",
     "chess.js": "^1.4.0",
     "zod": "^4.2.1"
   },
   "devDependencies": {
-    "@smithery/cli": "^2.2.1",
     "@types/node": "^25.0.3",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
