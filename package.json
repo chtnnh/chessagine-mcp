@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "build:vercel": "tsc && tsc && chmod +x build/runner/stdio.js && npm run start",
+    "build:vercel": "tsc && tsc && chmod +x build/runner/remote.js && npm run remote",
     "build:mcp": "tsc && chmod +x build/runner/stdio.js && mcpb pack",
     "build:ui": "npm run build:chess-board && npm run build:pgn-viewer",
     "build:chess-board": "BUILD_APP=chess-board vite build",
@@ -21,6 +21,7 @@
     "publish": "npm run clean && npm run build",
     "debug": "npx @modelcontextprotocol/inspector node build/runner/stdio.js",
     "start": "node build/runner/stdio.js",
+    "remote": "node build/runner/remote.js",
     "clean": "rm -rf build dist",
     "hardclean": "rm -rf node_modules"
   },
@@ -37,6 +38,8 @@
     "@vitejs/plugin-react": "^5.1.4",
     "axios": "^1.13.5",
     "chess.js": "^1.4.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "mcp-handler": "^1.0.7",
     "react": "^19.2.4",
     "react-chessboard": "^5.10.0",
@@ -46,6 +49,8 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@types/node": "^25.2.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
