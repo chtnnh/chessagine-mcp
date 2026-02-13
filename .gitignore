@@ -1,9 +1,9 @@
 output.txt 
-node_modules 
-dist 
+node_modules  
 .mastra
 .smithery 
 .env.development 
+*.mcpb
 .env 
 *.db 
 *.db-* 

@@ -13,9 +13,14 @@
   },
   "scripts": {
     "build:mcp": "tsc && chmod +x build/runner/stdio.js && mcpb pack",
+    "build:ui": "npm run build:chess-board && npm run build:pgn-viewer",
+    "build:chess-board": "BUILD_APP=chess-board vite build",
+    "build:pgn-viewer": "BUILD_APP=pgn-viewer vite build",
+    "build": "npm run build:ui && npm run build:mcp",
     "debug": "npx @modelcontextprotocol/inspector node build/runner/stdio.js",
     "start": "node build/runner/stdio.js",
-    "clean": "rm -rf build"
+    "clean": "rm -rf build dist",
+    "hardclean": "rm -rf node_modules"
   },
   "keywords": [],
   "author": "Jalp",
@@ -24,13 +29,23 @@
     "node": ">=20.9.0"
   },
   "dependencies": {
+    "@mliebelt/pgn-viewer": "^1.6.11",
+    "@modelcontextprotocol/ext-apps": "^0.4.0",
     "@modelcontextprotocol/sdk": "^1.26.0",
+    "@vitejs/plugin-react": "^5.1.4",
     "axios": "^1.13.5",
     "chess.js": "^1.4.0",
+    "react": "^19.2.4",
+    "react-chessboard": "^5.10.0",
+    "react-dom": "^19.2.4",
+    "vite": "^7.3.1",
+    "vite-plugin-singlefile": "^2.3.0",
     "zod": "^4.2.1"
   },
   "devDependencies": {
     "@types/node": "^25.2.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
