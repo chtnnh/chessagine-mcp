@@ -1,5 +1,5 @@
 import { createMcpHandler } from "mcp-handler";
-import {registerAgine} from "../src/mcp/registerAgine";
+import {registerAgine} from "../src/mcp/registerAgine.js";
 
 
 const mcpHandler = createMcpHandler(
