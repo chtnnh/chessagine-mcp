@@ -10,7 +10,7 @@ export function registerLocalStockfishTools(server: McpServer): void {
   server.registerTool(
     "get-stockfish-analysis",
     {
-      description: "Analyze a chess position using Stockfish 17.1 WASM engine",
+      description: "Analyze a chess position using Stockfish 18 Multi-threated Lite WASM engine",
       inputSchema: {
         fen: fenSchema,
         depth: engineDepthSchema,
@@ -100,11 +100,10 @@ export function registerLocalStockfishTools(server: McpServer): void {
     }
   );
 
-  // Get best move
   server.registerTool(
     "get-stockfish-best-move",
     {
-      description: "Find the best move in a chess position using Stockfish 17.1 WASM engine",
+      description: "Find the best move in a chess position using Stockfish 18 Multi-threated Lite WASM engine",
       inputSchema: {
         fen: fenSchema,
         depth: engineDepthSchema,
@@ -153,11 +152,11 @@ export function registerLocalStockfishTools(server: McpServer): void {
     }
   );
 
-  // Multi-PV analysis
+
   server.registerTool(
     "get-stockfish-multipv-analysis",
     {
-      description: "Analyze a chess position and get multiple best move candidates with Stocfish 17.1 WASM engine",
+      description: "Analyze a chess position and get multiple best move candidates with Stockfish 18 Multi-threated Lite WASM engine",
       inputSchema: {
         fen: fenSchema,
         depth: engineDepthSchema,
@@ -204,11 +203,11 @@ export function registerLocalStockfishTools(server: McpServer): void {
     }
   );
 
-  // Batch analysis
+
   server.registerTool(
     "get-stockfish-batch-analysis",
     {
-      description: "Analyze multiple chess positions in batch using Stockfish 17.1 WASM engine",
+      description: "Analyze multiple chess positions in batch using Stockfish 18 Multi-threated Lite WASM engine",
       inputSchema: {
         positions: z.array(
           z.object({

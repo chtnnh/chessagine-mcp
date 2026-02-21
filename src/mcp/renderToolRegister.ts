@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 export function registerRenderingTools(server: McpServer): void {
   
-  // Chess Board Resource
+
   const chessBoardResourceUri = "ui://chessagine/chess-board";
   
   registerAppResource(
@@ -36,7 +36,7 @@ export function registerRenderingTools(server: McpServer): void {
     }
   );
 
-  // Chess Board Tool
+  
   registerAppTool(
     server,
     "render_chess_board",
@@ -74,7 +74,6 @@ export function registerRenderingTools(server: McpServer): void {
     }
   );
 
-  // PGN Viewer Resource
   const pgnViewerResourceUri = "ui://chessagine/pgn-viewer";
   
   registerAppResource(
@@ -100,7 +99,7 @@ export function registerRenderingTools(server: McpServer): void {
     }
   );
 
-  // PGN Viewer Tool
+
   registerAppTool(
     server,
     "render_pgn_viewer",
