@@ -13,6 +13,8 @@ export const engineDepthSchema = z.number().min(12).max(30).describe("Search dep
 
 export const moveSchema = z.string().describe("The move to be played (in SAN or UCI format)");
 
+export const moveAlgSchema = z.array(z.string()).describe("Array of moves in algebraic notation");
+
 export const gamePgnSchema = z.string().describe("Game PGN");
 
 export const cbmGameIdSchema = z.string().describe("game ID to fetch chessboardmagic game")
@@ -20,3 +22,5 @@ export const cbmGameIdSchema = z.string().describe("game ID to fetch chessboardm
 export const cbmRepIdSchema = z.string().describe("repertoire ID to fetch a repertoire from chessboardmagic")
 
 export const is3dSchema = z.boolean().describe("3D view of the board").optional()
+
+export const is960Schema = z.boolean().describe("Is this a chess960 variant user query").default(false);

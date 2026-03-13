@@ -1,7 +1,8 @@
 import { Chess, Color, WHITE, BLACK, PAWN, Square } from "chess.js";
 import { PositionalPawn } from "../types/types.js";
+import { Chess960 } from "void57-chess";
 
-export function getSidePositionalCount(chess: Chess, side: Color): PositionalPawn {
+export function getSidePositionalCount(chess: Chess | Chess960, side: Color): PositionalPawn {
   const pawnSquares = chess.findPiece({type: PAWN, color: side});
   const doublePawns = getDoublePawnCount(pawnSquares);
   const isolatedPawnCount = getSideIsolatedPawnCount(pawnSquares);
@@ -40,7 +41,7 @@ export function getSidePositionalCount(chess: Chess, side: Color): PositionalPaw
   };
 }
 
-function getPassedPawnCount(chess: Chess, side: Color): number {
+function getPassedPawnCount(chess: Chess | Chess960, side: Color): number {
   const enemySide = side === WHITE ? BLACK : WHITE;
   const myPawns = chess.findPiece({type: PAWN, color: side});
   const enemyPawns = chess.findPiece({type: PAWN, color: enemySide});
@@ -101,7 +102,7 @@ function getSideIsolatedPawnCount(pawnSquares: string[]): number {
   return isolatedCount;
 }
 
-function getSideBackwardPawnCount(chess: Chess, pawnSquares: string[], side: Color): number {
+function getSideBackwardPawnCount(chess: Chess | Chess960, pawnSquares: string[], side: Color): number {
   const pawnMap = new Map<string, number[]>();
 
   // Group pawns by file
@@ -163,7 +164,7 @@ function getSideBackwardPawnCount(chess: Chess, pawnSquares: string[], side: Col
   return backwardCount;
 }
 
-function canAdvanceSafely(chess: Chess, square: string, side: Color): boolean {
+function canAdvanceSafely(chess: Chess | Chess960, square: string, side: Color): boolean {
   // Check if the square is occupied
   const piece = chess.get(square as Square);
   if (piece) {

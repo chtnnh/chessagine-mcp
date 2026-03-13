@@ -2,31 +2,33 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { gamePgnSchema } from "../runner/schema.js";
 import z from "zod";
 import { ChessUtilsService } from "../services/util.js";
-import { toolAdapter, toolContentAdapter } from "@jalpp/mcp-adapter";
-
+import { toolAdapter, toolContentAdapter, staticResourceAdapter } from "@jalpp/mcp-adapter";
 
 export function registerUtilsTools(server: McpServer) {
   const utilsService = new ChessUtilsService();
 
-  toolAdapter(server, {
-    name: "get-chess-knowledgebase",
-    config: {
-      description: "Returns a comprehensive chess knowledgebase including Silman Imbalances, Fine's 30 chess principles, endgame principles, and practical checklists",
-    },
-    cb: async () => {
+
+  staticResourceAdapter(server, {
+    name: "chess-knowledgebase",
+    uri: "chess://knowledgebase",
+    title: "Chess Knowledge Base",
+    description: "Comprehensive chess knowledgebase including Silman Imbalances, Fine's 30 chess principles, endgame principles, and practical checklists",
+    mimeType: "text/plain",
+    load: () => {
       const { data, error } = utilsService.getKnowledgeBase();
-      return toolContentAdapter({ knowledgebase: data }, error);
+      return error ?? data ?? "";
     },
   });
 
-  toolAdapter(server, {
-    name: "get-chessagine-stater-prompts",
-    config: {
-      description: "List all available chess analysis prompt categories with their example prompts",
-    },
-    cb: async () => {
+  staticResourceAdapter(server, {
+    name: "chess-starter-prompts",
+    uri: "chess://starter-prompts",
+    title: "Chess Starter Prompts",
+    description: "All available chess analysis prompt categories with their example prompts",
+    mimeType: "application/json",
+    load: () => {
       const { data, error } = utilsService.getStarterPrompts();
-      return toolContentAdapter(data ?? {}, error);
+      return error ?? JSON.stringify(data, null, 2);
     },
   });
 

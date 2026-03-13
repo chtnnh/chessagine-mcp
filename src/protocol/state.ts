@@ -10,18 +10,25 @@ import { getSideSpaceControl } from "../themes/spaceControl.js";
 import { getSideSquareControl } from "../themes/sqaureControl.js";
 import { getKingSafety } from "../themes/kingSafety.js";
 import { getPieceMobility } from "../themes/pieceMobility.js";
+import { Chess960 } from "void57-chess";
 
 export function calculateDeep(
   fen: string,
-  move: string
+  move: string,
+  is960: boolean
 ): BoardState | undefined {
   const chess = new Chess(fen);
   chess.move(move);
-  return getBoardState(chess.fen());
+  return getBoardState(chess.fen(), is960);
 }
 
-export function getBoardState(fen: string): BoardState {
-  const chess = new Chess(fen);
+export function getBoardState(fen: string, is960: boolean): BoardState {
+  let chess;
+
+  if(is960){
+    chess = new Chess960();
+  }
+  chess = new Chess();
   const validfen = validateFen(fen).ok;
   if (!validfen) {
     return {} as BoardState;

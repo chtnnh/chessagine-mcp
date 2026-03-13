@@ -16,7 +16,7 @@ export function registerAgine(server: McpServer): void {
     registerBoardStateTools(server);
     registerCBM(server);
     registerLocalStockfishTools(server);
-    registerThemeAnalysisTools
+    registerThemeAnalysisTools(server);
     registerUtilsTools(server);
     registerChessDBTools(server);
     registerNeuralNetTools(server);

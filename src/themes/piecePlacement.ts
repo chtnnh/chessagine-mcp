@@ -1,7 +1,8 @@
 import { Chess, Color, KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN } from "chess.js"
 import { SidePiecePlacement } from "../types/types.js"
+import { Chess960 } from "void57-chess"
 
-export function getPiecePlacement(chess: Chess, side: Color): SidePiecePlacement {
+export function getPiecePlacement(chess: Chess | Chess960, side: Color): SidePiecePlacement {
   return {
     kingplacement: chess.findPiece({type: KING, color: side}),
     queenplacement: chess.findPiece({type: QUEEN, color: side}),

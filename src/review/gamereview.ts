@@ -3,7 +3,7 @@ import { analyzeVariationThemes, findCriticalMoments} from "./ovp.js";
 import { GameReview, ThemeScore } from "../types/types.js";
 
 
-export function generateGameReview(pgn: string, criticalMomentThreshold: number = 0.5): GameReview {
+export function generateGameReview(pgn: string, criticalMomentThreshold: number = 0.5, is960: boolean): GameReview {
     const chess = new Chess();
     
     // Load and parse PGN
@@ -27,12 +27,12 @@ export function generateGameReview(pgn: string, criticalMomentThreshold: number 
     const startingFen = chess.fen();
     
     // Analyze for both colors
-    const whiteAnalysis = analyzeVariationThemes(startingFen, history, "w");
-    const blackAnalysis = analyzeVariationThemes(startingFen, history, "b");
+    const whiteAnalysis = analyzeVariationThemes(startingFen, history, "w", is960);
+    const blackAnalysis = analyzeVariationThemes(startingFen, history, "b", is960);
     
     // Find critical moments
-    const whiteCriticalMoments = findCriticalMoments(startingFen, history, "w", criticalMomentThreshold);
-    const blackCriticalMoments = findCriticalMoments(startingFen, history, "b", criticalMomentThreshold);
+    const whiteCriticalMoments = findCriticalMoments(startingFen, history, "w", criticalMomentThreshold, is960);
+    const blackCriticalMoments = findCriticalMoments(startingFen, history, "b", criticalMomentThreshold, is960);
     
     // Calculate average theme scores throughout the game
     const whiteAvgScores = calculateAverageScores(whiteAnalysis.moveByMoveScores);

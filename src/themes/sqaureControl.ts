@@ -1,8 +1,9 @@
 import { Chess, Color, Square, WHITE, BLACK } from "chess.js";
 import { getPiecePlacement } from "./piecePlacement.js";
 import { SideSquareControl } from "../types/types.js";
+import { Chess960 } from "void57-chess";
 
-export function getSideSquareControl(chess: Chess, side: Color): SideSquareControl {
+export function getSideSquareControl(chess: Chess | Chess960, side: Color): SideSquareControl {
    const placement = getPiecePlacement(chess, side);
    const lightSquares: string[] = [];
    const darkSquares: string[] =  [];

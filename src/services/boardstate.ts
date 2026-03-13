@@ -1,9 +1,11 @@
 import { getBoardState, calculateDeep } from "../protocol/state.js";
 import { PositionPrompter } from "../protocol/positionPrompter.js";
 import { LegalMoveResult, BoardStateResult } from "./types.js";
+import { Chess960 } from 'void57-chess'
 export class BoardStateService {
+
   
-  checkLegalMove(fen: string, move: string): LegalMoveResult {
+  checkLegalMove(fen: string, move: string, is960: boolean): LegalMoveResult {
     if (!fen) {
       return { error: "Missing required argument: fen" };
     }
@@ -13,7 +15,7 @@ export class BoardStateService {
     }
 
     try {
-      const boardState = getBoardState(fen);
+      const boardState = getBoardState(fen, is960);
       
       if (!boardState) {
         return {
@@ -48,7 +50,7 @@ export class BoardStateService {
     }
   }
 
-  getBoardStateForMove(fen: string, move: string): BoardStateResult {
+  getBoardStateForMove(fen: string, move: string, is960: boolean): BoardStateResult {
     if (!fen) {
       return { error: "Missing required argument: fen" };
     }
@@ -58,7 +60,7 @@ export class BoardStateService {
     }
 
     try {
-      const boardState = calculateDeep(fen, move);
+      const boardState = calculateDeep(fen, move, is960);
       
       if (!boardState || !boardState.validfen) {
         return {
@@ -81,13 +83,13 @@ export class BoardStateService {
     }
   }
 
-  getBoardStateForFen(fen: string): BoardStateResult {
+  getBoardStateForFen(fen: string, is960: boolean): BoardStateResult {
     if (!fen) {
       return { error: "Missing required argument: fen" };
     }
 
     try {
-      const boardState = getBoardState(fen);
+      const boardState = getBoardState(fen, is960);
       
       if (!boardState || !boardState.validfen) {
         return {

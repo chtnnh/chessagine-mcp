@@ -1,9 +1,10 @@
 import { Color, Chess, PAWN, WHITE, BLACK, Square, KING, QUEEN, ROOK, BISHOP, KNIGHT } from "chess.js";
 import { PieceMobility } from "../types/types.js";
 import { getPiecePlacement } from "./piecePlacement.js";
+import { Chess960 } from "void57-chess";
 
 
-function getSidePieces(chess: Chess, side: Color): string[] {
+function getSidePieces(chess: Chess | Chess960, side: Color): string[] {
   const pieces = getPiecePlacement(chess, side);
 
   return [
@@ -39,7 +40,7 @@ export function getPieceMobility(fen: string, side: Color): PieceMobility {
   };
 }
 
-function calculateMobilityForSide(chess: Chess, fen: string, side: Color): {
+function calculateMobilityForSide(chess: Chess | Chess960, fen: string, side: Color): {
   queenmobility: number;
   rookmobility: number;
   bishopmobility: number;

@@ -22,8 +22,8 @@ function collectFenList(rootFen: string, moves: string[]): string[] {
 
 }
 
-export function getThemeScores(fen: string, color: Color): ThemeScore {
-    const scorer = new PositionScorer(fen, color);
+export function getThemeScores(fen: string, color: Color, is960: boolean): ThemeScore {
+    const scorer = new PositionScorer(fen, color, is960);
     return {
         material: scorer.getThemeScore(STATE_THEMES.MATERIAL),
         mobility: scorer.getThemeScore(STATE_THEMES.MOBILITY),
@@ -38,9 +38,9 @@ export function getThemeScores(fen: string, color: Color): ThemeScore {
     };
 }
 
-export function analyzeVariationThemes(rootFen: string, moves: string[], color: Color): VariationAnalysis {
+export function analyzeVariationThemes(rootFen: string, moves: string[], color: Color, is960: boolean): VariationAnalysis {
     if (moves.length === 0) {
-        const rootScores = getThemeScores(rootFen, color);
+        const rootScores = getThemeScores(rootFen, color, is960);
         return {
             themeChanges: [],
             overallChange: 0,
@@ -51,7 +51,7 @@ export function analyzeVariationThemes(rootFen: string, moves: string[], color: 
     }
 
     const fens = [rootFen, ...collectFenList(rootFen, moves)];
-    const moveByMoveScores: ThemeScore[] = fens.map(fen => getThemeScores(fen, color));
+    const moveByMoveScores: ThemeScore[] = fens.map(fen => getThemeScores(fen, color, is960));
     
     const initialScores = moveByMoveScores[0];
     const finalScores = moveByMoveScores[moveByMoveScores.length - 1];
@@ -90,32 +90,32 @@ export function analyzeVariationThemes(rootFen: string, moves: string[], color: 
     };
 }
 
-export function getThemeProgression(rootFen: string, moves: string[], color: Color, theme: keyof ThemeScore): number[] {
+export function getThemeProgression(rootFen: string, moves: string[], color: Color, theme: keyof ThemeScore, is960: boolean): number[] {
     if (moves.length === 0) {
-        return [getThemeScores(rootFen, color)[theme]];
+        return [getThemeScores(rootFen, color, is960)[theme]];
     }
     
     const fens = [rootFen, ...collectFenList(rootFen, moves)];
-    return fens.map(fen => getThemeScores(fen, color)[theme]);
+    return fens.map(fen => getThemeScores(fen, color, is960)[theme]);
 }
 
-export function compareVariations(rootFen: string, variations: Array<{name: string, moves: string[]}>, color: Color): Array<{name: string, analysis: VariationAnalysis}> {
+export function compareVariations(rootFen: string, variations: Array<{name: string, moves: string[]}>, color: Color, is960: boolean): Array<{name: string, analysis: VariationAnalysis}> {
     return variations.map(variation => ({
         name: variation.name,
-        analysis: analyzeVariationThemes(rootFen, variation.moves, color)
+        analysis: analyzeVariationThemes(rootFen, variation.moves, color, is960)
     }));
 }
 
 
-export function findCriticalMoments(rootFen: string, moves: string[], color: Color, threshold: number = 0.5): Array<{moveIndex: number, move: string, themeChanges: ThemeChange[]}> {
+export function findCriticalMoments(rootFen: string, moves: string[], color: Color, threshold: number = 0.5, is960: boolean): Array<{moveIndex: number, move: string, themeChanges: ThemeChange[]}> {
     if (moves.length === 0) return [];
     
     const criticalMoments: Array<{moveIndex: number, move: string, themeChanges: ThemeChange[]}> = [];
     const fens = [rootFen, ...collectFenList(rootFen, moves)];
     
     for (let i = 1; i < fens.length; i++) {
-        const previousScores = getThemeScores(fens[i - 1], color);
-        const currentScores = getThemeScores(fens[i], color);
+        const previousScores = getThemeScores(fens[i - 1], color, is960);
+        const currentScores = getThemeScores(fens[i], color, is960);
         
         const moveThemeChanges: ThemeChange[] = themeNames.map(theme => {
             const initial = previousScores[theme];

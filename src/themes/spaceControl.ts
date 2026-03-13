@@ -1,7 +1,8 @@
 import { Chess, Color, WHITE, BLACK } from "chess.js";
 import { BOARD_CENTRE, BOARD_FLANK, SpaceControl } from "../types/types.js";
+import { Chess960 } from "void57-chess";
 
-function getSpaceControl(chess: Chess, side: Color): number {
+function getSpaceControl(chess: Chess | Chess960, side: Color): number {
    let spaceMeasure = 0;
    for(const sq of BOARD_CENTRE){
      spaceMeasure += chess.attackers(sq, side).length;
@@ -9,7 +10,7 @@ function getSpaceControl(chess: Chess, side: Color): number {
    return spaceMeasure;
 }
 
-function getFlankSpaceControl(chess: Chess, side: Color): number {
+function getFlankSpaceControl(chess: Chess | Chess960, side: Color): number {
   let flankMeasure = 0;
   for(const sq of BOARD_FLANK){
     flankMeasure += chess.attackers(sq, side).length;
@@ -17,7 +18,7 @@ function getFlankSpaceControl(chess: Chess, side: Color): number {
   return flankMeasure;
 }
 
-export function getSideSpaceControl(chess: Chess, side: Color): SpaceControl {
+export function getSideSpaceControl(chess: Chess | Chess960, side: Color): SpaceControl {
     const centre = getSpaceControl(chess, side);
     const flank = getFlankSpaceControl(chess, side);
     const total = centre + flank;

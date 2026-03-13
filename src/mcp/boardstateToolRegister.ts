@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import z from "zod";
-import { fenSchema, moveSchema } from "../runner/schema.js";
+import { fenSchema, is960Schema, moveSchema } from "../runner/schema.js";
 import { BoardStateService } from "../services/boardstate.js";
 import {toolAdapter, toolContentAdapter} from "@jalpp/mcp-adapter";
 export function registerBoardStateTools(server: McpServer): void {
@@ -13,13 +13,14 @@ export function registerBoardStateTools(server: McpServer): void {
       inputSchema: {
         fen: z.string().describe("FEN string representing the board position, the fen must be in full form containing which side to move"),
         move: z.string().describe("The move to be played (in SAN or UCI format)"),
+        is960: is960Schema
       },
       annotations: {
         openWorldHint: false,
       },
     },
-    cb: async ({ fen, move }) => {
-      const { data, error } = stateService.checkLegalMove(fen, move);
+    cb: async ({ fen, move, is960 }) => {
+      const { data, error } = stateService.checkLegalMove(fen, move, is960);
       return toolContentAdapter(data ?? {}, error);
     },
   });
@@ -31,13 +32,14 @@ export function registerBoardStateTools(server: McpServer): void {
       inputSchema: {
         fen: fenSchema,
         move: moveSchema,
+        is960: is960Schema
       },
       annotations: {
         openWorldHint: false,
       },
     },
-    cb: async ({ fen, move }) => {
-      const { data, error } = stateService.getBoardStateForMove(fen, move);
+    cb: async ({ fen, move, is960 }) => {
+      const { data, error } = stateService.getBoardStateForMove(fen, move, is960);
       return toolContentAdapter(data ?? {}, error);
     },
   });
@@ -48,13 +50,14 @@ export function registerBoardStateTools(server: McpServer): void {
       description: "Given a FEN, returns a string describing the resulting board state for that FEN",
       inputSchema: {
         fen: fenSchema,
+        is960: is960Schema
       },
       annotations: {
         openWorldHint: false,
       },
     },
-    cb: async ({ fen }) => {
-      const { data, error } = stateService.getBoardStateForFen(fen);
+    cb: async ({ fen, is960 }) => {
+      const { data, error } = stateService.getBoardStateForFen(fen, is960);
       return toolContentAdapter(data ?? {}, error);
     },
   });
