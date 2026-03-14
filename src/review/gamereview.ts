@@ -1,15 +1,14 @@
-import { Chess } from "chess.js";
 import { analyzeVariationThemes, findCriticalMoments} from "./ovp.js";
 import { GameReview, ThemeScore } from "../types/types.js";
+import { chessBuilder } from "../utils/utils.js";
 
 
 export function generateGameReview(pgn: string, criticalMomentThreshold: number = 0.5, is960: boolean): GameReview {
-    const chess = new Chess();
-    
-    // Load and parse PGN
+    const chess = chessBuilder(is960);
+
     chess.loadPgn(pgn);
     
-    // Extract game headers
+   
     const headers = chess.getHeaders();
     const gameInfo = {
         white: headers.White || "Unknown",
@@ -21,10 +20,14 @@ export function generateGameReview(pgn: string, criticalMomentThreshold: number 
     
     // Get move history
     const history = chess.history();
-    
+    let startingFen;
     // Reset to starting position
-    chess.reset();
-    const startingFen = chess.fen();
+    if(!is960){
+     chess.reset();
+     startingFen = chess.fen();
+    }else{
+      startingFen = chess.getHeaders()["FEN"];
+    }
     
     // Analyze for both colors
     const whiteAnalysis = analyzeVariationThemes(startingFen, history, "w", is960);

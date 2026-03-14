@@ -10,27 +10,24 @@ import { getSideSpaceControl } from "../themes/spaceControl.js";
 import { getSideSquareControl } from "../themes/sqaureControl.js";
 import { getKingSafety } from "../themes/kingSafety.js";
 import { getPieceMobility } from "../themes/pieceMobility.js";
-import { Chess960 } from "void57-chess";
+import { chessValidateBuilder } from "../utils/utils.js";
+
 
 export function calculateDeep(
   fen: string,
   move: string,
   is960: boolean
 ): BoardState | undefined {
-  const chess = new Chess(fen);
+  const {chess} = chessValidateBuilder(is960, fen);
   chess.move(move);
   return getBoardState(chess.fen(), is960);
 }
 
 export function getBoardState(fen: string, is960: boolean): BoardState {
-  let chess;
+  
+  const {isValid, chess} = chessValidateBuilder(is960, fen);
 
-  if(is960){
-    chess = new Chess960();
-  }
-  chess = new Chess();
-  const validfen = validateFen(fen).ok;
-  if (!validfen) {
+  if(!isValid){
     return {} as BoardState;
   }
 
@@ -76,7 +73,7 @@ export function getBoardState(fen: string, is960: boolean): BoardState {
 
   return {
     fen,
-    validfen,
+    validfen: isValid,
     legalMoves,
     white: whiteScores,
     black: blackScores,
@@ -88,5 +85,6 @@ export function getBoardState(fen: string, is960: boolean): BoardState {
     moveNumber,
     sidetomove,
     gamePhase,
+    is960,
   };
 }

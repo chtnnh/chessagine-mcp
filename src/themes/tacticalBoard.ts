@@ -13,6 +13,8 @@ import {
 } from "chess.js";
 
 import { PieceType, PieceColour, Pin } from "../types/types.js";
+import { chessFromFenBuilder } from "../utils/utils.js";
+import { Chess960 } from "void57-chess";
 
 export class TacticalBoard {
   private board: string[][] = Array.from({ length: 8 }, () =>
@@ -33,12 +35,14 @@ export class TacticalBoard {
 
   private whitePins: Pin[] = [];
   private blackPins: Pin[] = [];
+  private is960;
 
   // note that 0,0 is the top left
 
-  constructor(fen: string) {
+  constructor(fen: string, is960: boolean) {
     this.parseFEN(fen);
     this.fen = fen;
+    this.is960 = is960;
     this.calculateDefendersAndAttackers();
     this.calculatePieceVulnerability();
     this.detectPins();
@@ -626,7 +630,7 @@ export class TacticalBoard {
     const pieceForks: string[][] = [];
 
     // Create a new chess instance for this calculation
-    const chess = new Chess(this.fen);
+    const chess = chessFromFenBuilder(this.fen, this.is960);
 
     const pieces = chess.findPiece(piece);
 
@@ -694,7 +698,7 @@ export class TacticalBoard {
     piece: PieceSymbol,
     pieceSq: Square,
     side: Color,
-    chess: Chess
+    chess: Chess | Chess960
   ): string[] {
     const forks: string[] = [];
 
@@ -785,7 +789,7 @@ export class TacticalBoard {
   private getAttackedSquares(
     piece: PieceSymbol,
     square: Square,
-    chess: Chess
+    chess: Chess | Chess960
   ): Square[] {
     const attackedSquares: Square[] = [];
 
@@ -920,7 +924,7 @@ export class TacticalBoard {
     file: number,
     rank: number,
     directions: number[][],
-    chess: Chess
+    chess: Chess | Chess960
   ): void {
     for (const [df, dr] of directions) {
       let currentFile = file;

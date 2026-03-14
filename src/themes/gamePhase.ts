@@ -1,8 +1,9 @@
 
 import { Chess } from "chess.js";
 import { PIECE_VALUES } from "../types/types.js";
+import { Chess960 } from "void57-chess";
 
-export function getGamePhase(chess: Chess): 'opening' | 'middlegame' | 'endgame' {
+export function getGamePhase(chess: Chess | Chess960): 'opening' | 'middlegame' | 'endgame' {
   const fen = chess.fen();
   const moveNumber = parseInt(fen.split(' ')[5]) || 1; // Full move number
   const totalMaterial = getTotalMaterialValue(chess);
@@ -64,7 +65,7 @@ export function getGamePhase(chess: Chess): 'opening' | 'middlegame' | 'endgame'
   return 'middlegame';
 }
 
-export function getTotalMaterialValue(chess: Chess): number {
+export function getTotalMaterialValue(chess: Chess | Chess960): number {
   let total = 0;
   const board = chess.board();
   

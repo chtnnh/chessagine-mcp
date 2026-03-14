@@ -13,7 +13,7 @@ export class PositionScorer {
 
   constructor(fen: string, color: Color, is960: boolean) {
     this.state = getBoardState(fen, is960);
-    this.tacticalScorer = new TacticalBoard(fen);
+    this.tacticalScorer = new TacticalBoard(fen, is960);
     this.side = color;
     this.tempoScorer = new TempoCalculator(this.state, this.tacticalScorer, this.side);
     

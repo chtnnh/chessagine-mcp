@@ -8,6 +8,7 @@ import { registerLocalStockfishTools } from "./stockfishServerRegister.js";
 import { registerCBM } from "./cbmToolRegister.js";
 import { registerChessDBTools } from "./chessDbToolRegister.js";
 import { registerNeuralNetTools } from "./neuralNetToolRegister.js";
+import { registerPosiraTools } from "./posiraOpeningRegister.js";
 
 
 export function registerAgine(server: McpServer): void {
@@ -20,4 +21,5 @@ export function registerAgine(server: McpServer): void {
     registerUtilsTools(server);
     registerChessDBTools(server);
     registerNeuralNetTools(server);
+    registerPosiraTools(server);
 }

@@ -1,17 +1,19 @@
-import { Chess, Color } from "chess.js";
+import { Color } from "chess.js";
 import { PositionScorer } from "../protocol/positionScorer.js";
 import { STATE_THEMES } from "../types/types.js";
 import { ThemeScore, VariationAnalysis, ThemeChange, themeNames } from "../types/types.js";
+import { chessFromFenBuilder } from "../utils/utils.js";
 
 
-function collectFenList(rootFen: string, moves: string[]): string[] {
+function collectFenList(rootFen: string, moves: string[], is960: boolean): string[] {
     const collectedFen: string[] = [];
 
     if(moves.length == 0){
         return [];
     }
 
-    const chess = new Chess(rootFen);
+    const chess = chessFromFenBuilder(rootFen, is960);
+
 
     for(let i = 0; i < moves.length; i++){
         chess.move(moves[i]);
@@ -50,7 +52,7 @@ export function analyzeVariationThemes(rootFen: string, moves: string[], color: 
         };
     }
 
-    const fens = [rootFen, ...collectFenList(rootFen, moves)];
+    const fens = [rootFen, ...collectFenList(rootFen, moves, is960)];
     const moveByMoveScores: ThemeScore[] = fens.map(fen => getThemeScores(fen, color, is960));
     
     const initialScores = moveByMoveScores[0];
@@ -95,7 +97,7 @@ export function getThemeProgression(rootFen: string, moves: string[], color: Col
         return [getThemeScores(rootFen, color, is960)[theme]];
     }
     
-    const fens = [rootFen, ...collectFenList(rootFen, moves)];
+    const fens = [rootFen, ...collectFenList(rootFen, moves, is960)];
     return fens.map(fen => getThemeScores(fen, color, is960)[theme]);
 }
 
@@ -111,7 +113,7 @@ export function findCriticalMoments(rootFen: string, moves: string[], color: Col
     if (moves.length === 0) return [];
     
     const criticalMoments: Array<{moveIndex: number, move: string, themeChanges: ThemeChange[]}> = [];
-    const fens = [rootFen, ...collectFenList(rootFen, moves)];
+    const fens = [rootFen, ...collectFenList(rootFen, moves, is960)];
     
     for (let i = 1; i < fens.length; i++) {
         const previousScores = getThemeScores(fens[i - 1], color, is960);

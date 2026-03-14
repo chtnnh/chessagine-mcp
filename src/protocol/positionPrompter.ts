@@ -21,7 +21,7 @@ export class PositionPrompter {
 
   constructor(state: BoardState) {
     this.state = state;
-    this.tactical = new TacticalBoard(state.fen);
+    this.tactical = new TacticalBoard(state.fen, state.is960);
     this.tempoCalculator = new TempoCalculator(this.state, this.tactical, new Chess(state.fen).turn());
     this.sections = [];
   }

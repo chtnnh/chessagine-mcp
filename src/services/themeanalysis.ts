@@ -30,13 +30,13 @@ export class ThemeAnalysisService {
     }
   }
 
-  getTacticalPositionSummary(fen: string): ThemeResult {
+  getTacticalPositionSummary(fen: string, is960: boolean): ThemeResult {
     if (!fen) {
       return { error: "Missing required argument: fen" };
     }
 
     try {
-      const tactics = new TacticalBoard(fen);
+      const tactics = new TacticalBoard(fen, is960);
       return { data: tactics.toString() };
     } catch (error) {
       return { error: "Error getting tactical position summary" };

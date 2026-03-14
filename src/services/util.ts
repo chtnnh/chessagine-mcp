@@ -56,13 +56,13 @@ export class ChessUtilsService {
     }
   }
 
-  parsePgnIntoFens(pgn: string): UtilsResult {
+  parsePgnIntoFens(pgn: string, is960: boolean): UtilsResult {
     if (!pgn) {
       return { error: "Missing required argument: pgn" };
     }
 
     try {
-      const fens = collectFensFromGame(pgn);
+      const fens = collectFensFromGame(pgn, is960);
 
       return {
         data: {
@@ -74,7 +74,7 @@ export class ChessUtilsService {
     }
   }
 
-  getFenMapLookup(pgn: string, isAfter: boolean): UtilsResult {
+  getFenMapLookup(pgn: string, isAfter: boolean, is960: boolean): UtilsResult {
     if (!pgn) {
       return { error: "Missing required argument: pgn" };
     }
@@ -84,7 +84,7 @@ export class ChessUtilsService {
     }
 
     try {
-      const fenMap = moveToFenMap(pgn, isAfter);
+      const fenMap = moveToFenMap(pgn, isAfter, is960);
 
       return {
         data: {

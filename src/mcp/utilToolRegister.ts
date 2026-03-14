@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { gamePgnSchema } from "../runner/schema.js";
+import { gamePgnSchema, is960Schema } from "../runner/schema.js";
 import z from "zod";
 import { ChessUtilsService } from "../services/util.js";
 import { toolAdapter, toolContentAdapter, staticResourceAdapter } from "@jalpp/mcp-adapter";
@@ -47,10 +47,10 @@ export function registerUtilsTools(server: McpServer) {
     name: "parse-pgn-into-fens",
     config: {
       description: "Collect a fen list of given game pgn",
-      inputSchema: { pgn: gamePgnSchema },
+      inputSchema: { pgn: gamePgnSchema, is960: is960Schema },
     },
-    cb: async ({ pgn }) => {
-      const { data, error } = utilsService.parsePgnIntoFens(pgn);
+    cb: async ({ pgn, is960 }) => {
+      const { data, error } = utilsService.parsePgnIntoFens(pgn, is960);
       return toolContentAdapter(data ?? {}, error);
     },
   });
@@ -62,10 +62,11 @@ export function registerUtilsTools(server: McpServer) {
       inputSchema: {
         pgn: gamePgnSchema,
         isAfter: z.boolean().describe("If true, maps moves to FEN after the move; if false, maps to FEN before the move"),
+        is960: is960Schema
       },
     },
-    cb: async ({ pgn, isAfter }) => {
-      const { data, error } = utilsService.getFenMapLookup(pgn, isAfter);
+    cb: async ({ pgn, isAfter, is960 }) => {
+      const { data, error } = utilsService.getFenMapLookup(pgn, isAfter, is960);
       return toolContentAdapter(data ?? {}, error);
     },
   });

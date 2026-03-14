@@ -174,6 +174,7 @@ export interface BoardState {
   moveNumber: number;
   sidetomove: string;
   gamePhase: 'opening' | 'middlegame' | 'endgame';
+  is960: boolean;
 }
 
 interface Opening {

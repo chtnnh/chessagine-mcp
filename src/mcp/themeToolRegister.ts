@@ -26,11 +26,11 @@ export function registerThemeAnalysisTools(server: McpServer): void {
     config: {
       description:
         "Get tactical position summary like hanging pieces, semi protected pieces, forks, pins for the given fen",
-      inputSchema: { fen: fenSchema},
+      inputSchema: { fen: fenSchema, is960: is960Schema},
       annotations: { openWorldHint: false },
     },
-    cb: async ({ fen }) => {
-      const { data, error } = themeService.getTacticalPositionSummary(fen);
+    cb: async ({ fen, is960 }) => {
+      const { data, error } = themeService.getTacticalPositionSummary(fen, is960);
       return toolContentAdapter(data ?? {}, error);
     },
   });
