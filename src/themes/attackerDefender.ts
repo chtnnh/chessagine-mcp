@@ -1,7 +1,8 @@
 import { Chess, Color, WHITE, BLACK, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, PieceSymbol, Square } from "chess.js";
 import { SideAttackerDefenders, PieceAttackDefendInfo } from "../types/types.js";
+import { Chess960 } from "void57-chess";
 
-export function getSideAttackerDefenderInfo(chess: Chess, side: Color): SideAttackerDefenders {
+export function getSideAttackerDefenderInfo(chess: Chess | Chess960, side: Color): SideAttackerDefenders {
   const enemySide = side === WHITE ? BLACK : WHITE;
   return {
     pawnInfo: getPieceAttDefInfo(PAWN, chess, side, enemySide),
@@ -14,7 +15,7 @@ export function getSideAttackerDefenderInfo(chess: Chess, side: Color): SideAtta
   
 }
 
-export function getPieceAttDefInfo(piece: PieceSymbol, chess: Chess, side: Color, enemySide: Color): PieceAttackDefendInfo {
+export function getPieceAttDefInfo(piece: PieceSymbol, chess: Chess | Chess960, side: Color, enemySide: Color): PieceAttackDefendInfo {
   const pieceSquares = chess.findPiece({type: piece, color: side});
 
   const enemyAttackers: Square[] = [];

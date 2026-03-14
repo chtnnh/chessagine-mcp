@@ -1,7 +1,8 @@
 import { Color, Chess, PAWN, WHITE, BLACK, Square, KING, QUEEN } from "chess.js";
 import { KingSafety } from "../types/types.js";
+import { Chess960 } from "void57-chess";
 
-export function getKingSafety(chess: Chess, side: Color): KingSafety {
+export function getKingSafety(chess: Chess | Chess960, side: Color): KingSafety {
   const enemySide = side === WHITE ? BLACK : WHITE;
   const kingSquare = chess.findPiece({type: KING, color: side})[0] as Square;
   
@@ -64,7 +65,7 @@ export function getKingSafety(chess: Chess, side: Color): KingSafety {
   };
 }
 
-export function calculatePawnShield(chess: Chess, kingSquare: Square, side: Color): number {
+export function calculatePawnShield(chess: Chess | Chess960, kingSquare: Square, side: Color): number {
   const kingFile = kingSquare.charCodeAt(0) - 'a'.charCodeAt(0);
   const kingRank = parseInt(kingSquare[1]) - 1;
   const direction = side === WHITE ? 1 : -1;
@@ -92,10 +93,22 @@ export function calculatePawnShield(chess: Chess, kingSquare: Square, side: Colo
   return pawnShield;
 }
 
-function hasKingCastled(chess: Chess, side: Color): boolean {
-  const kingSquare = chess.findPiece({type: KING, color: side})[0];
+function hasKingCastled(chess: Chess | Chess960, side: Color): boolean {
+  const kingSquare = chess.findPiece({ type: KING, color: side })[0];
   if (!kingSquare) return false;
-  
-  const expectedSquare = side === WHITE ? 'e1' : 'e8';
-  return kingSquare !== expectedSquare;
+
+
+  const castlingRights = chess.getCastlingRights(side);
+  const hasCastlingRights = castlingRights[KING] || castlingRights[QUEEN];
+
+  // If the king moved from its starting square and has no castling rights,
+  // it either castled or moved (we can't distinguish without move history)
+  if (!hasCastlingRights) return false;
+
+  // In Chess960 and standard chess, after castling the king lands on g1/g8 (kingside)
+  // or c1/c8 (queenside) — same destination squares as standard chess
+  const kingsideCastled = kingSquare === (side === WHITE ? 'g1' : 'g8');
+  const queensideCastled = kingSquare === (side === WHITE ? 'c1' : 'c8');
+
+  return kingsideCastled || queensideCastled;
 }

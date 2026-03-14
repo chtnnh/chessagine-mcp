@@ -1,8 +1,9 @@
 import { MaterialInfo, PIECE_VALUES } from "../types/types.js";
 import { Chess, Color, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, WHITE, BLACK } from "chess.js";
 import { getPiecePlacement } from "./piecePlacement.js";
+import { Chess960 } from "void57-chess";
 
-export function getMaterialInfo(chess: Chess, side: Color): MaterialInfo {
+export function getMaterialInfo(chess: Chess | Chess960, side: Color): MaterialInfo {
 
   const pieces = getPiecePlacement(chess, side);
   
