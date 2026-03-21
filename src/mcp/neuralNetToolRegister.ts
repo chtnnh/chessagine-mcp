@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import z from "zod";
-import { fenSchema } from "../runner/schema.js";
+import { fenSchema, tokenSchema } from "../runner/schema.js";
 import { postToolAdapter } from "@jalpp/mcp-adapter";
 
 const BASE_URL = "https://nn-analyze-service-717993082875.us-central1.run.app";
@@ -15,7 +15,9 @@ export function registerNeuralNetTools(server: McpServer): void {
       fen: fenSchema,
       engine: z.literal("maia2").default("maia2"),
       rating: z.number().min(1100).max(1900).describe("Target player rating level for analysis, the rating must be the following values: [1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900]"),
+      token: tokenSchema,
     },
+    tokenParam: "token",
     auth: {type: "bearer", token: process.env.LICHESS_API_TOKEN!}
   });
 

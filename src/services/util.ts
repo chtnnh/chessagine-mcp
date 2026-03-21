@@ -62,11 +62,11 @@ export class ChessUtilsService {
     }
 
     try {
-      const fens = collectFensFromGame(pgn, is960);
+      const histories = collectFensFromGame(pgn, is960);
 
       return {
         data: {
-          fens: fens
+          histories: histories
         }
       };
     } catch (error) {

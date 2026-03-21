@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { fenSchema } from "../runner/schema.js";
+import { fenSchema, tokenSchema } from "../runner/schema.js";
 import z from "zod";
 import { LichessService } from "../services/lichess.js";
 import { toolAdapter, toolContentAdapter } from "@jalpp/mcp-adapter";
@@ -12,10 +12,13 @@ export function registerLichessTools(server: McpServer): void {
     name: "get-lichess-master-games",
     config: {
       description: "Fetch master-level games and opening statistics from Lichess for a given position",
-      inputSchema: { fen: fenSchema },
+      inputSchema: { fen: fenSchema, token: tokenSchema },
       annotations: { openWorldHint: true },
     },
-    cb: async ({ fen }) => {
+    cb: async ({ fen, token }) => {
+      if(token && token?.length > 0){
+        lichess.setAuthToken(token);
+      }
       const output = await lichess.getLichessMasterGamesOpeningBook(fen);
       return toolContentAdapter(output ?? {}, undefined);
     },
@@ -25,10 +28,13 @@ export function registerLichessTools(server: McpServer): void {
     name: "get-lichess-games",
     config: {
       description: "Fetch Lichess user games and opening statistics for a given position",
-      inputSchema: { fen: fenSchema },
+      inputSchema: { fen: fenSchema, token: tokenSchema },
       annotations: { openWorldHint: true },
     },
-    cb: async ({ fen }) => {
+    cb: async ({ fen, token }) => {
+      if(token && token?.length > 0){
+        lichess.setAuthToken(token);
+      }
       const output = await lichess.getLichessPublicGamesOpeningBook(fen);
       return toolContentAdapter(output ?? {}, undefined);
     },
@@ -109,10 +115,14 @@ export function registerLichessTools(server: McpServer): void {
       description: "Fetch all studies for a given Lichess user. Returns a list of studies with their IDs, names, and timestamps. Requires either LICHESS_STUDY_TOKEN environment variable or token parameter.",
       inputSchema: {
         username: z.string().describe("Lichess username to fetch studies for"),
+        token: tokenSchema,
       },
     },
-    cb: async ({ username }) => {
+    cb: async ({ username, token }) => {
       try {
+        if(token && token?.length > 0){
+        lichess.setAuthToken(token);
+      }
         const studies = await lichess.getLichessUserStudies(username);
         return toolContentAdapter(studies ?? {}, undefined);
       } catch (error) {
@@ -127,10 +137,14 @@ export function registerLichessTools(server: McpServer): void {
       description: "Fetch a specific Lichess study in PGN format. Returns all chapters of the study as PGN. Requires either LICHESS_STUDY_TOKEN environment variable or token parameter.",
       inputSchema: {
         studyId: z.string().describe("Lichess study ID (e.g., WTvnkWAL from https://lichess.org/study/WTvnkWAL)"),
+        token: tokenSchema
       },
     },
-    cb: async ({ studyId }) => {
+    cb: async ({ studyId, token }) => {
       try {
+        if(token && token?.length > 0){
+        lichess.setAuthToken(token);
+      }
         const studyPgnOutput = await lichess.getLichessStudyPgn(studyId);
         return toolContentAdapter(studyPgnOutput ?? {}, undefined);
       } catch (error) {

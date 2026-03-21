@@ -19,6 +19,10 @@ export class LichessService {
     this.LICHESS_USERNAME = process.env.LICHESS_USERNAME || "";
   }
 
+  public setAuthToken(token: string) {
+    this.authToken = token;
+  }
+
   private checkMissingApiTokenError() {
     if (!this.authToken || this.authToken.length === 0) {
       return {

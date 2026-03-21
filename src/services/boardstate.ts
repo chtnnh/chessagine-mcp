@@ -1,7 +1,7 @@
 import { getBoardState, calculateDeep } from "../protocol/state.js";
 import { PositionPrompter } from "../protocol/positionPrompter.js";
 import { LegalMoveResult, BoardStateResult } from "./types.js";
-import { Chess960 } from 'void57-chess'
+
 export class BoardStateService {
 
   

@@ -32,7 +32,7 @@
     "node": ">=20.9.0"
   },
   "dependencies": {
-    "@jalpp/mcp-adapter": "^0.3.1",
+    "@jalpp/mcp-adapter": "^0.3.3",
     "@mliebelt/pgn-viewer": "^1.6.11",
     "@modelcontextprotocol/ext-apps": "^1.2.2",
     "@modelcontextprotocol/sdk": "^1.25.2",
@@ -46,14 +46,14 @@
     "react-chessboard": "^5.10.0",
     "react-dom": "^19.2.4",
     "vite": "^7.3.1",
-    "vite-plugin-singlefile": "^2.3.0",
+    "vite-plugin-singlefile": "^2.3.2",
     "void57-chess": "^1.0.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.2.1",
+    "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "nodemon": "^3.1.14",

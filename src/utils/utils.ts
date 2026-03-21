@@ -104,8 +104,17 @@ export function normalizeChessDBScore(score: number, turn: Color): number {
   return score;
 }
 
-export function collectFensFromGame(pgn: string, is960: boolean): string[] {
+export function collectFensFromGame(pgn: string, is960: boolean) {
   const fens: string[] = [];
+
+  interface HistoryData {
+    fenAfter: string;
+    fenBefore: string;
+    moveSan: string;
+    index: number;
+  }
+
+  const histories: HistoryData[] = [];
 
   const chess = chessBuilder(is960);
 
@@ -114,10 +123,13 @@ export function collectFensFromGame(pgn: string, is960: boolean): string[] {
   const history = chess.history({ verbose: true });
 
   for (let i = 0; i < history.length; i++) {
-    fens[i] = history[i].after;
+    histories[i].fenAfter = history[i].after;
+    histories[i].fenBefore = history[i].before;
+    histories[i].moveSan = history[i].san;
+    histories[i].index = i+1;
   }
 
-  return fens;
+  return histories;
 }
 
 export function moveToFenMap(
