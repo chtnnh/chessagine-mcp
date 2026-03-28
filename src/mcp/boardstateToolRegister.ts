@@ -3,6 +3,8 @@ import z from "zod";
 import { fenSchema, is960Schema, moveSchema } from "../runner/schema.js";
 import { BoardStateService } from "../services/boardstate.js";
 import {toolAdapter, toolContentAdapter} from "@jalpp/mcp-adapter";
+import { valid960Param } from "../utils/utils.js";
+
 export function registerBoardStateTools(server: McpServer): void {
   const stateService = new BoardStateService();
 
@@ -20,7 +22,8 @@ export function registerBoardStateTools(server: McpServer): void {
       },
     },
     cb: async ({ fen, move, is960 }) => {
-      const { data, error } = stateService.checkLegalMove(fen, move, is960);
+       const valid960 = valid960Param(is960);
+      const { data, error } = stateService.checkLegalMove(fen, move, valid960);
       return toolContentAdapter(data ?? {}, error);
     },
   });
@@ -39,7 +42,28 @@ export function registerBoardStateTools(server: McpServer): void {
       },
     },
     cb: async ({ fen, move, is960 }) => {
-      const { data, error } = stateService.getBoardStateForMove(fen, move, is960);
+       const valid960 = valid960Param(is960);
+      const { data, error } = stateService.getBoardStateForMove(fen, move, valid960);
+      return toolContentAdapter(data ?? {}, error);
+    },
+  });
+
+  toolAdapter(server, {
+    name: "parse-moves-for-boardstate",
+    config: {
+      description: "Given a FEN, and list of moves played from FEN, returns the ending board state",
+      inputSchema: {
+        fen: fenSchema,
+        moves: z.array(moveSchema),
+        is960: is960Schema
+      },
+      annotations: {
+        openWorldHint: false,
+      },
+    },
+    cb: async ({ fen, moves, is960 }) => {
+      const valid960 = valid960Param(is960);
+      const { data, error } = stateService.getEndingBoardStateForMoves(fen, moves, valid960);
       return toolContentAdapter(data ?? {}, error);
     },
   });
@@ -57,7 +81,8 @@ export function registerBoardStateTools(server: McpServer): void {
       },
     },
     cb: async ({ fen, is960 }) => {
-      const { data, error } = stateService.getBoardStateForFen(fen, is960);
+      const valid960 = valid960Param(is960);
+      const { data, error } = stateService.getBoardStateForFen(fen, valid960);
       return toolContentAdapter(data ?? {}, error);
     },
   });

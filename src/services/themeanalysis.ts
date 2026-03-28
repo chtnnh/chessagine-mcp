@@ -20,6 +20,7 @@ export class ThemeAnalysisService {
     if (!color) {
       return { error: "Missing required argument: color" };
     }
+    
 
     try {
       const validColor = validColorSchema(color);

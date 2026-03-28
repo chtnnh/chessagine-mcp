@@ -3,6 +3,7 @@ import z from "zod";
 import { fenSchema, gamePgnSchema, is960Schema, moveAlgSchema, sideSchema } from "../runner/schema.js";
 import { ThemeAnalysisService } from "../services/themeanalysis.js";
 import { toolAdapter, toolContentAdapter } from "@jalpp/mcp-adapter";
+import { valid960Param } from "../utils/utils.js";
 
 export function registerThemeAnalysisTools(server: McpServer): void {
   const themeService = new ThemeAnalysisService();
@@ -16,7 +17,8 @@ export function registerThemeAnalysisTools(server: McpServer): void {
       annotations: { openWorldHint: false },
     },
     cb: async ({ fen, color, is960 }) => {
-      const { data, error } = themeService.getThemeScores(fen, color, is960);
+      const valid960 = valid960Param(is960);
+      const { data, error } = themeService.getThemeScores(fen, color, valid960);
       return toolContentAdapter(data ?? {}, error);
     },
   });
@@ -30,7 +32,8 @@ export function registerThemeAnalysisTools(server: McpServer): void {
       annotations: { openWorldHint: false },
     },
     cb: async ({ fen, is960 }) => {
-      const { data, error } = themeService.getTacticalPositionSummary(fen, is960);
+      const valid960 = valid960Param(is960);
+      const { data, error } = themeService.getTacticalPositionSummary(fen, valid960);
       return toolContentAdapter(data ?? {}, error);
     },
   });
@@ -48,11 +51,12 @@ export function registerThemeAnalysisTools(server: McpServer): void {
       annotations: { openWorldHint: false },
     },
     cb: async ({ rootFen, moves, color, is960 }) => {
+      const valid960 = valid960Param(is960);
       const { data, error } = themeService.analyzeVariationThemes(
         rootFen,
         moves,
         color,
-        is960
+        valid960
       );
       return toolContentAdapter(data ?? {}, error);
     },
@@ -84,12 +88,13 @@ export function registerThemeAnalysisTools(server: McpServer): void {
       annotations: { openWorldHint: false },
     },
     cb: async ({ rootFen, moves, color, theme, is960 }) => {
+      const valid960 = valid960Param(is960);
       const { data, error } = themeService.getThemeProgression(
         rootFen,
         moves,
         color,
         theme,
-        is960
+        valid960
       );
       return toolContentAdapter(data ?? {}, error);
     },
@@ -116,11 +121,12 @@ export function registerThemeAnalysisTools(server: McpServer): void {
       annotations: { openWorldHint: false },
     },
     cb: async ({ rootFen, variations, color, is960 }) => {
+       const valid960 = valid960Param(is960);
       const { data, error } = themeService.compareVariations(
         rootFen,
         variations,
         color,
-        is960
+        valid960
       );
       return toolContentAdapter(data ?? {}, error);
     },
@@ -145,12 +151,13 @@ export function registerThemeAnalysisTools(server: McpServer): void {
       annotations: { openWorldHint: false },
     },
     cb: async ({ rootFen, moves, color, threshold = 0.5, is960 }) => {
+       const valid960 = valid960Param(is960);
       const { data, error } = themeService.findCriticalMoments(
         rootFen,
         moves,
         color,
         threshold,
-        is960
+        valid960
       );
       return toolContentAdapter(data ?? {}, error);
     },
@@ -184,11 +191,12 @@ export function registerThemeAnalysisTools(server: McpServer): void {
       annotations: { openWorldHint: false },
     },
     cb: async ({ pgn, criticalMomentThreshold = 0.5, format = "text", is960 }) => {
+       const valid960 = valid960Param(is960);
       const { data, error } = themeService.generateGameReview(
         pgn,
         criticalMomentThreshold,
         format,
-        is960
+        valid960
         
       );
       return toolContentAdapter(
