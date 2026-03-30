@@ -105,31 +105,28 @@ export function normalizeChessDBScore(score: number, turn: Color): number {
 }
 
 export function collectFensFromGame(pgn: string, is960: boolean) {
-  const fens: string[] = [];
-
-  interface HistoryData {
-    fenAfter: string;
-    fenBefore: string;
-    moveSan: string;
-    index: number;
-  }
-
-  const histories: HistoryData[] = [];
 
   const chess = chessBuilder(is960);
-
   chess.loadPgn(pgn);
-
   const history = chess.history({ verbose: true });
 
-  for (let i = 0; i < history.length; i++) {
-    histories[i].fenAfter = history[i].after;
-    histories[i].fenBefore = history[i].before;
-    histories[i].moveSan = history[i].san;
-    histories[i].index = i+1;
+  return history.map((move, i) => ({
+    fenAfter: move.after,
+    fenBefore: move.before,
+    moveSan: move.san,
+    index: i + 1,
+    ply: Math.ceil((i + 1) / 2),
+  }));
+}
+
+export function parseMovesForEndingState(rootFen: string, moves: string[], is960: boolean) {
+  const chess = chessFromFenBuilder(rootFen, is960);
+
+  for(let i = 0; i < moves.length; i++){
+    chess.move(moves[i]);
   }
 
-  return histories;
+  return chess.fen();
 }
 
 export function moveToFenMap(
@@ -186,6 +183,15 @@ export function chessFromFenBuilder(rootFen: string, is960: boolean) {
   is960 ? (chess = new Chess960(rootFen)) : (chess = new Chess(rootFen));
 
   return chess;
+}
+
+export function valid960Param(is960: boolean | undefined | null){
+
+  if(is960 === undefined || is960 === null || !is960){
+    return false;
+  }
+
+  return is960;
 }
 
 

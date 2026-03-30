@@ -1,8 +1,8 @@
 {
   "manifest_version": "0.3",
-  "name": "chessagine-mcp-v0.6.5",
-  "version": "0.6.5",
-  "description": "ChessAgine MCP connects LLMs directly to live chess context Stockfish evaluation, board state, positional themes, ChessDB openings, Lichess games, and neural engines like Maia2, Leela, and Elite Leela. It also renders chess positions and full PGN games for deep visual analysis, turning language models into truly chess-aware agents.",
+  "name": "chessagine-mcp-v0.6.6",
+  "version": "0.6.6",
+  "description": "ChessAgine MCP connects LLMs directly to live chess context Stockfish evaluation, board state, positional themes, ChessDB openings, Lichess games, and neural engines like Maia3, Leela, and Elite Leela. It also renders chess positions and full PGN games for deep visual analysis, turning language models into truly chess-aware agents.",
   "author": {
     "name": "Jalp",
     "url": "https://github.com/jalpp"
@@ -55,100 +55,6 @@
       "required": false
     }
   },
-  "tools": [
-    {
-      "name": "get-maia2-analysis",
-      "description": "Analyze chess positions with human game trained Maia2 neural net."
-    },
-    {
-      "name": "get-leela-analysis",
-      "description": "Analyze chess positions with self-play game trained Leela (lc0) neural net."
-    },
-    {
-      "name": "get-elite-leela-analysis",
-      "description": "Analyze chess positions with elite human game trained Elite Leela neural net."
-    },
-    {
-      "name": "get-theme-scores",
-      "description": "Analyze chess position themes (material, mobility, space, positional factors, king safety) for strategic evaluation from white or black perspective."
-    },
-    {
-      "name": "analyze-variation-themes",
-      "description": "Track how chess themes evolve across a sequence of moves, showing positional changes and strategic developments in variations."
-    },
-    {
-      "name": "get-theme-progression",
-      "description": "Monitor the progression of a specific chess theme (material/mobility/space/positional/king safety) throughout a variation of moves."
-    },
-    {
-      "name": "compare-variations",
-      "description": "Compare multiple chess variations side-by-side, analyzing theme changes and strategic differences to identify the strongest continuation."
-    },
-    {
-      "name": "find-critical-moments",
-      "description": "Identify key moves in a variation where significant theme changes occur, highlighting turning points and critical decision moments."
-    },
-    {
-      "name": "get-stockfish-analysis",
-      "description": "Perform deep Stockfish engine analysis of any chess position, providing best moves, evaluation scores, principal variations, and strategic reasoning."
-    },
-    {
-      "name": "get-best-move",
-      "description": "Analyze a position and get best move"
-    },
-    {
-      "name": "is-legal-move",
-      "description": "Verify if a proposed move is legal in the given chess position, ensuring move validation before analysis or gameplay."
-    },
-    {
-      "name": "boardstate-to-prompt",
-      "description": "Generate detailed text description of a chess position after a move, converting board state into natural language for analysis and discussion."
-    },
-    {
-      "name": "get-chess-knowledgebase",
-      "description": "Access comprehensive chess knowledge including Silman's imbalances, Fine's principles, endgame theory, and practical improvement checklists."
-    },
-    {
-      "name": "get-lichess-master-games",
-      "description": "Retrieve master-level games and opening statistics from Lichess database for any position, including win rates and popular continuations."
-    },
-    {
-      "name": "get-lichess-games",
-      "description": "Fetch regular Lichess user games and opening statistics, providing insights into how positions are played at various skill levels."
-    },
-    {
-      "name": "get-chessdb-analysis",
-      "description": "Query ChessDB for position analysis with candidate moves, evaluations, win rates, and move quality ratings from extensive game databases."
-    },
-    {
-      "name": "generate-chess-board-view-artificat-using-html",
-      "description": "Renders chess board in HTML"
-    },
-    {
-      "name": "generate-dynamic-gameview-html",
-      "description": "Render dynamic chess game"
-    },
-    {
-      "name": "fetch-chess-puzzle",
-      "description": "Fetches puzzles from Lichess puzzle database, can query by theme or rating"
-    },
-    {
-      "name": "get-puzzle-themes",
-      "description": "gets the puzzle themes"
-    },
-    {
-      "name": "fetch-user-recent-games-from-lichess",
-      "description": "Fetch 20 recent games from Lichess"
-    },
-    {
-      "name": "fetch-lichess-game",
-      "description": "fetch a single lichess game"
-    },
-    {
-      "name": "generate-game-review",
-      "description": "Generate detailed game review dashboard or text version using theme stats"
-    }
-  ],
   
   "keywords": [
     "chess",

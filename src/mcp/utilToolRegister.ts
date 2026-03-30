@@ -44,9 +44,9 @@ export function registerUtilsTools(server: McpServer) {
   });
 
   toolAdapter(server, {
-    name: "parse-pgn-into-move-histories",
+    name: "parse-pgn-into-move-fens",
     config: {
-      description: "Collect a move data list of given game pgn",
+      description: "Parses a PGN into a move list object containing move information like before, after FEN, move notation, and move numbers",
       inputSchema: { pgn: gamePgnSchema, is960: is960Schema },
     },
     cb: async ({ pgn, is960 }) => {
