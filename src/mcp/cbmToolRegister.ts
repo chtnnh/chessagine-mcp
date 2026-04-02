@@ -2,7 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { cbmGameIdSchema, cbmRepIdSchema, fenSchema } from "../runner/schema.js";
 import { getToolAdapter } from "@jalpp/mcp-adapter";
 import { tokenSchema } from "../runner/schema.js";
-import { z } from "zod";
+
 
 const BASE_URL = "https://api.chessboardmagic.com";
 

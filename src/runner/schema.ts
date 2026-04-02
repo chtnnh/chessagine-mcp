@@ -9,7 +9,7 @@ export const fenSchema = z
 
 export const sideSchema = z.enum(["w", "b"]).describe("Side to evaluate from");
 
-export const engineDepthSchema = z.number().min(12).max(30).describe("Search depth for Stockfish engine");
+export const engineDepthSchema = z.number().min(12).max(18).describe("Search depth for Stockfish engine");
 
 export const moveSchema = z.string().describe("The move to be played (in SAN or UCI format)");
 
@@ -23,6 +23,6 @@ export const cbmRepIdSchema = z.string().describe("repertoire ID to fetch a repe
 
 export const is3dSchema = z.boolean().describe("3D view of the board").optional()
 
-export const is960Schema = z.boolean().describe("Is this a chess960 variant user query").default(false);
+export const is960Schema = z.boolean().describe("Is this a chess960 variant user query");
 
 export const tokenSchema = z.string().optional().describe("Bearer token to authenticate the request, falls back to server configured token if not provided");
