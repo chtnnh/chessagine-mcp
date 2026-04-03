@@ -51,7 +51,7 @@ export function registerBoardStateTools(server: McpServer): void {
   toolAdapter(server, {
     name: "parse-moves-for-boardstate",
     config: {
-      description: "Given a FEN, and list of moves played from FEN, returns the ending board state",
+      description: "Given a FEN, and list of moves played from FEN, parses and returns the ending board state",
       inputSchema: {
         fen: fenSchema,
         moves: z.array(moveSchema),
