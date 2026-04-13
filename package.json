@@ -32,12 +32,12 @@
     "node": ">=20.9.0"
   },
   "dependencies": {
-    "@jalpp/mcp-adapter": "^0.3.3",
+    "@jalpp/mcp-adapter": "^1.0.0",
     "@mliebelt/pgn-viewer": "^1.6.11",
     "@modelcontextprotocol/ext-apps": "^1.2.2",
     "@modelcontextprotocol/sdk": "^1.26.0",
     "@vitejs/plugin-react": "^6.0.1",
-    "axios": "^1.13.5",
+    "axios": "^1.15.0",
     "chess.js": "^1.4.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",

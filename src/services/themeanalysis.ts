@@ -26,7 +26,7 @@ export class ThemeAnalysisService {
       const validColor = validColorSchema(color);
       const result = getThemeScores(fen, validColor as Color, is960);
       return { data: result };
-    } catch (error) {;
+    } catch (error) {
       return { error: "Error getting theme scores" };
     }
   }
