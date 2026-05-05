@@ -14,6 +14,7 @@ export function registerLocalStockfishTools(server: McpServer): void {
     inputSchema: {
       fen: fenSchema,
       depth: engineDepthSchema,
+      nullMove: z.boolean().describe("Set to true to apply null move to check opposite side's evaluation"),
       multiPv: z.number().min(1).max(5).default(1).optional().describe("Number of principal variations"),
     },
   });
@@ -33,6 +34,7 @@ export function registerLocalStockfishTools(server: McpServer): void {
     endpoint: `${BASE_URL}/bestmove`,
     inputSchema: {
       fen: fenSchema,
+      nullMove: z.boolean().describe("Set to true to apply null move to check opposite side's evaluation"),
       depth: engineDepthSchema,
     },
   });
@@ -44,6 +46,7 @@ export function registerLocalStockfishTools(server: McpServer): void {
     inputSchema: {
       fen: fenSchema,
       depth: engineDepthSchema,
+      nullMove: z.boolean().describe("Set to true to apply null move to check opposite side's evaluation"),
       multiPv: z.number().min(1).max(5).describe("Number of best move lines to analyze (1-5)"),
     },
   });
