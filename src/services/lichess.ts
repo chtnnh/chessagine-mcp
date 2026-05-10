@@ -9,6 +9,9 @@ import {
   getDifficultyLevel,
   getThemeDescriptions,
 } from "../tools/puzzle.js";
+import { SERVICE_CONFIG_BASE_URL_MAP } from "./config.js";
+
+const BASE_URL = SERVICE_CONFIG_BASE_URL_MAP.LICHESS_BASE_URL;
 
 export class LichessService {
   private authToken;
@@ -70,7 +73,7 @@ export class LichessService {
 
   public async getLichessUserRecentGames(username: string) {
     const response = await fetch(
-      `https://lichess.org/api/games/user/${username}?until=${Date.now()}&max=20&pgnInJson=true&sort=dateDesc`,
+      `${BASE_URL}/api/games/user/${username}?until=${Date.now()}&max=20&pgnInJson=true&sort=dateDesc`,
       {
         method: "GET",
         headers: { accept: "application/x-ndjson" },
@@ -126,7 +129,7 @@ export class LichessService {
     let gameId = gameUrlOrId;
     let isValid = true;
 
-    if (gameUrlOrId.includes("lichess.org") || gameUrlOrId.includes("/")) {
+    if (gameUrlOrId.includes(BASE_URL) || gameUrlOrId.includes("/")) {
       try {
         const urlObj = new URL(gameUrlOrId);
         const pathname = urlObj.pathname;
@@ -172,7 +175,7 @@ export class LichessService {
       };
     }
 
-    const response = await fetch(`https://lichess.org/game/export/${gameId}`, {
+    const response = await fetch(`${BASE_URL}/game/export/${gameId}`, {
       headers: {
         Accept: "application/x-chess-pgn",
       },
@@ -263,7 +266,7 @@ export class LichessService {
     this.checkMissingApiTokenError();
 
     const response = await fetch(
-      `https://lichess.org/api/study/by/${username}`,
+      `${BASE_URL}/api/study/by/${username}`,
       {
         method: "GET",
         headers: {
@@ -313,7 +316,7 @@ export class LichessService {
     this.checkMissingApiTokenError();
 
     const response = await axios.get(
-      `https://lichess.org/api/study/${studyId}.pgn`,
+      `${BASE_URL}/api/study/${studyId}.pgn`,
       {
         headers: {
           Authorization: `Bearer ${this.authToken}`,

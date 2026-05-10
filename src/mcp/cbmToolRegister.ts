@@ -2,9 +2,10 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { cbmGameIdSchema, cbmRepIdSchema, fenSchema } from "../runner/schema.js";
 import { getToolAdapter } from "@jalpp/mcp-adapter";
 import { tokenSchema } from "../runner/schema.js";
+import { SERVICE_CONFIG_BASE_URL_MAP } from "../services/config.js";
 
 
-const BASE_URL = "https://api.chessboardmagic.com";
+const BASE_URL = SERVICE_CONFIG_BASE_URL_MAP.CBM_BASE_URL;
 
 const staticAuth = {
   type: "bearer" as const,
