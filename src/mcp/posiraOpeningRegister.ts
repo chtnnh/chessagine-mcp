@@ -1,8 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import z from "zod";
 import { getToolAdapter } from "@jalpp/mcp-adapter";
+import { SERVICE_CONFIG_BASE_URL_MAP } from "../services/config.js";
 
-const BASE_URL = "https://api.posira.dev";
+const BASE_URL = SERVICE_CONFIG_BASE_URL_MAP.POSIRA_BASE_URL;
 
 const auth = {
   type: "bearer" as const,

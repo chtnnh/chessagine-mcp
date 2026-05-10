@@ -2,8 +2,9 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { fenSchema, engineDepthSchema } from "../runner/schema.js";
 import { z } from "zod";
 import { postToolAdapter } from "@jalpp/mcp-adapter";
+import { SERVICE_CONFIG_BASE_URL_MAP } from "../services/config.js";
 
-const BASE_URL = "https://stockfish-service-717993082875.us-central1.run.app";
+const BASE_URL = SERVICE_CONFIG_BASE_URL_MAP.SF_BASE_URL;
 
 export function registerLocalStockfishTools(server: McpServer): void {
 

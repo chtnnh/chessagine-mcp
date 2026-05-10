@@ -1,9 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import z from "zod";
-import { fenSchema, tokenSchema } from "../runner/schema.js";
+import { fenSchema} from "../runner/schema.js";
 import { postToolAdapter } from "@jalpp/mcp-adapter";
+import { SERVICE_CONFIG_BASE_URL_MAP } from "../services/config.js";
 
-const BASE_URL = "https://nn-analyze-service-717993082875.us-central1.run.app";
+const BASE_URL = SERVICE_CONFIG_BASE_URL_MAP.NN_BASE_URL;
 
 export function registerNeuralNetTools(server: McpServer): void {
   postToolAdapter(server, {

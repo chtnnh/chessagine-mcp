@@ -1,3 +1,4 @@
+import { SERVICE_CONFIG_BASE_URL_MAP } from "../services/config.js";
 
 export interface PuzzleData {
   lichessId: string;
@@ -90,7 +91,7 @@ export const PUZZLE_THEMES: PuzzleTheme[] = [
 
 export async function fetchPuzzle(query?: PuzzleQuery): Promise<PuzzleData | null> {
   try {
-    let url = "https://api.chessgubbins.com/puzzles/random";
+    let url = `${SERVICE_CONFIG_BASE_URL_MAP.GUBBINS_BASE_URL}/puzzles/random`;
     const params = new URLSearchParams();
 
     if (query?.themes && query.themes.length > 0) {
