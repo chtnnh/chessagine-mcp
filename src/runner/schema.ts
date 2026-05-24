@@ -9,7 +9,7 @@ export const fenSchema = z
 
 export const sideSchema = z.enum(["w", "b"]).describe("Side to evaluate from");
 
-export const engineDepthSchema = z.number().min(12).max(18).describe("Search depth for Stockfish engine");
+export const engineDepthSchema = z.number().min(12).max(30).describe("Search depth for Stockfish engine");
 
 export const moveSchema = z.string().describe("The move to be played (in SAN or UCI format)");
 

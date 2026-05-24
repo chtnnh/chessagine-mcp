@@ -3,7 +3,7 @@ type ExternalService = 'SF_BASE_URL' | 'NN_BASE_URL' | 'CHESSDB_BASE_URL' | 'LIC
 
 export const SERVICE_CONFIG_BASE_URL_MAP: Record<ExternalService, string> = {
     SF_BASE_URL: "https://stockfish-service-717993082875.us-central1.run.app",
-    NN_BASE_URL: "https://nn-analyze-service-717993082875.us-central1.run.app",
+    NN_BASE_URL: "https://www.chessagine.com/api/nn",
     CHESSDB_BASE_URL: "https://www.chessdb.cn/cdb.php",
     LICHESS_BASE_URL: "https://lichess.org",
     POSIRA_BASE_URL: "https://api.posira.dev",
