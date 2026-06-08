@@ -33,8 +33,8 @@ interface ChessDbPvResponse {
 
 export interface ExpandQueueStreamResult {
   success:                   boolean;
-  estimatedNodesVisited:     number;  // geometric series: sum of width^d for d=0..depth
-  estimatedPositionsQueued:  number;  // width^depth * width, capped by maxPositionsQueued
+  estimatedNodesVisited:     number;  
+  estimatedPositionsQueued:  number; 
   queuedFens:                string[];
   errors:                    string[];
 }
@@ -157,9 +157,7 @@ export class ChessDBService {
   const expansionWidth     = options.expansionWidth     ?? 2;
   const maxPositionsQueued = options.maxPositionsQueued ?? 20;
  
-  // Estimated nodes visited = sum of width^d for d=0..depth (geometric series)
-  // Estimated positions queued = width^depth leaf nodes * width candidates each,
-  // capped by maxPositionsQueued
+
   const estimatedNodesVisited = expansionWidth === 1
     ? expansionDepth + 1
     : Math.round((Math.pow(expansionWidth, expansionDepth + 1) - 1) / (expansionWidth - 1));
