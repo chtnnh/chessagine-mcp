@@ -1,5 +1,44 @@
 import axios from "axios";
-import { MasterGames } from "../types/types.js";
+
+
+interface Opening {
+  eco: string;
+  name: string;
+}
+
+interface Side {
+  name: string;
+  rating: number;
+}
+
+interface Game {
+  uci: string;
+  id: string;
+  black: Side;
+  white: Side;
+  year: number;
+  month: string;
+}
+
+export interface Moves {
+  uci: string;
+  san: string;
+  averageRating: number;
+  white: number;
+  draws: number;
+  black: number;
+  game: Game;
+  opening: Opening;
+}
+
+export interface MasterGames {
+  opening: Opening;
+  white: number;
+  draws: number;
+  black: number;
+  moves: Moves[];
+  topGames: Game[];
+}
 
 const fetchLichessOpeningStats = async (
   endpoint: "masters" | "lichess",

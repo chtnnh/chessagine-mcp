@@ -13,7 +13,7 @@ const staticAuth = {
 };
 
 
-export function registerCBM(mcpserver: McpServer) {
+export function registerCBMTools(mcpserver: McpServer) {
 
   getToolAdapter(mcpserver, {
     name: "get-chessboardmagic-repertoires",

@@ -6,7 +6,7 @@ import { SERVICE_CONFIG_BASE_URL_MAP } from "../services/config.js";
 
 const BASE_URL = SERVICE_CONFIG_BASE_URL_MAP.SF_BASE_URL;
 
-export function registerLocalStockfishTools(server: McpServer): void {
+export function registerStockfishTools(server: McpServer): void {
 
   postToolAdapter(server, {
     name: "get-stockfish-analysis",
