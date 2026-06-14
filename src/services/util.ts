@@ -1,4 +1,4 @@
-import { getKnowledgeBase } from "../tools/knowlegebase.js";
+import { getKnowledgeBase as getChessKnowledgeBase } from "../tools/knowlegebase.js";
 import { moveToFenMap, PROMPT_CATEGORIES, collectFensFromGame } from "../utils/utils.js";
 import { PUZZLE_THEMES } from "../tools/puzzle.js";
 import { UtilsResult } from "./types.js";
@@ -8,8 +8,7 @@ export class ChessUtilsService {
   
   getKnowledgeBase(): UtilsResult {
     try {
-      const knowledge = getKnowledgeBase();
-      return { data: knowledge };
+      return { data: getChessKnowledgeBase() };
     } catch (error) {
       return { error: "Error getting chess knowledge base" };
     }

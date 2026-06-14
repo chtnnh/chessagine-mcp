@@ -9,18 +9,6 @@ export function registerUtilsTools(server: McpServer) {
 
 
   staticResourceAdapter(server, {
-    name: "chess-knowledgebase",
-    uri: "chess://knowledgebase",
-    title: "Chess Knowledge Base",
-    description: "Comprehensive chess knowledgebase including Silman Imbalances, Fine's 30 chess principles, endgame principles, and practical checklists",
-    mimeType: "text/plain",
-    load: () => {
-      const { data, error } = utilsService.getKnowledgeBase();
-      return error ?? data ?? "";
-    },
-  });
-
-  staticResourceAdapter(server, {
     name: "chess-starter-prompts",
     uri: "chess://starter-prompts",
     title: "Chess Starter Prompts",
@@ -29,6 +17,17 @@ export function registerUtilsTools(server: McpServer) {
     load: () => {
       const { data, error } = utilsService.getStarterPrompts();
       return error ?? JSON.stringify(data, null, 2);
+    },
+  });
+
+  toolAdapter(server, {
+    name: "get-chess-knowledge",
+    config: {
+      description: "Get the curated chess knowledge base as a JSON object.",
+    },
+    cb: async () => {
+      const { data, error } = utilsService.getKnowledgeBase();
+      return toolContentAdapter(data ?? {}, error);
     },
   });
 
