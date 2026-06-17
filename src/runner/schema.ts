@@ -13,6 +13,8 @@ export const engineDepthSchema = z.number().min(12).max(30).describe("Search dep
 
 export const moveSchema = z.string().describe("The move to be played (in SAN or UCI format)");
 
+export const movesListSchema = z.array(moveSchema);
+
 export const moveAlgSchema = z.array(z.string()).describe("Array of moves in algebraic notation");
 
 export const gamePgnSchema = z.string().describe("Game PGN");
