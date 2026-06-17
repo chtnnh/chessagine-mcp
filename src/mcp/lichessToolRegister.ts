@@ -9,6 +9,7 @@ import {
 import { fetchPuzzle, getDifficultyLevel, getThemeDescriptions } from "../tools/puzzle.js";
 
 export function registerLichessTools(server: McpServer): void {
+  
   getToolAdapter(server, {
     name: "get-lichess-master-games",
     description:

@@ -1,8 +1,11 @@
 import { getKnowledgeBase as getChessKnowledgeBase } from "../tools/knowlegebase.js";
 import { moveToFenMap, PROMPT_CATEGORIES, collectFensFromGame } from "../utils/utils.js";
 import { PUZZLE_THEMES } from "../tools/puzzle.js";
-import { UtilsResult } from "./types.js";
 
+export interface UtilsResult {
+  data?: any;
+  error?: string;
+}
 
 export class ChessUtilsService {
   

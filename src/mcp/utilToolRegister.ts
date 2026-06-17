@@ -5,8 +5,8 @@ import { ChessUtilsService } from "../services/util.js";
 import { toolAdapter, toolContentAdapter, staticResourceAdapter } from "@jalpp/mcp-adapter";
 
 export function registerUtilsTools(server: McpServer) {
+  
   const utilsService = new ChessUtilsService();
-
 
   staticResourceAdapter(server, {
     name: "chess-starter-prompts",
