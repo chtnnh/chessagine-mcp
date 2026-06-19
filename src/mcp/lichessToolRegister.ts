@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { fenSchema, tokenSchema } from "../runner/schema.js";
+import { fenSchema, puzzleThemesArraySchema, tokenSchema } from "../runner/schema.js";
 import z from "zod";
 import {
   getToolAdapter,
@@ -58,19 +58,14 @@ export function registerLichessTools(server: McpServer): void {
       "Fetch a random chess puzzle from the Lichess-backed puzzle service. Can filter by themes and rating range. Use this to start a puzzle session with the user.",
     endpoint: `${SERVICE_CONFIG_BASE_URL_MAP.SF_BASE_URL}/puzzle/builder`,
     inputSchema: {
-      themes: z
-        .array(z.string())
-        .optional()
-        .describe("Array of puzzle theme tags to filter by (e.g., ['fork', 'pin', 'mateIn2'])"),
+      themes: puzzleThemesArraySchema,
       ratingFrom: z
         .number()
         .min(1000)
-        .optional()
         .describe("Minimum puzzle rating (e.g., 1000)"),
       ratingTo: z
         .number()
         .max(2500)
-        .optional()
         .describe("Maximum puzzle rating (e.g., 2000)"),
     },
   });
