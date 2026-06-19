@@ -3,9 +3,11 @@ import { fenSchema, tokenSchema } from "../runner/schema.js";
 import z from "zod";
 import {
   getToolAdapter,
+  postToolAdapter,
   toolAdapter,
   toolContentAdapter,
 } from "@jalpp/mcp-adapter";
+import { SERVICE_CONFIG_BASE_URL_MAP } from "../services/config.js";
 
 
 export function registerLichessTools(server: McpServer): void {
@@ -50,69 +52,28 @@ export function registerLichessTools(server: McpServer): void {
     },
   });
 
-  // toolAdapter(server, {
-  //   name: "fetch-chess-puzzle",
-  //   config: {
-  //     description:
-  //       "Fetch a random chess puzzle from the Lichess-backed puzzle service. Can filter by themes and rating range. Use this to start a puzzle session with the user.",
-  //     inputSchema: {
-  //       themes: z
-  //         .array(z.string())
-  //         .optional()
-  //         .describe("Array of puzzle theme tags to filter by (e.g., ['fork', 'pin', 'mateIn2'])"),
-  //       ratingFrom: z
-  //         .number()
-  //         .min(1000)
-  //         .optional()
-  //         .describe("Minimum puzzle rating (e.g., 1000)"),
-  //       ratingTo: z
-  //         .number()
-  //         .max(2500)
-  //         .optional()
-  //         .describe("Maximum puzzle rating (e.g., 2000)"),
-  //     },
-  //   },
-  //   cb: async ({ themes, ratingFrom, ratingTo }) => {
-  //     try {
-  //       const puzzle = await fetchPuzzle({ themes, ratingFrom, ratingTo });
-
-  //       if (!puzzle) {
-  //         return toolContentAdapter({}, "Failed to fetch puzzle. Please try again.");
-  //       }
-
-  //       const solutionMoves = puzzle.moves.split(" ");
-  //       const firstMove = puzzle.preMove;
-  //       const turnToMove = puzzle.FEN.split(" ")[1] === "w" ? "White" : "Black";
-  //       const themeDescriptions = getThemeDescriptions(puzzle.themes);
-  //       const difficultyLevel = getDifficultyLevel(puzzle.rating);
-
-  //       const instructions = `A puzzle session has been started. The opponent just played ${firstMove}. It's ${turnToMove} to move. Guide the user through finding the best move without immediately revealing the answer. If they need help, provide hints about the tactical theme (${themeDescriptions.join(", ")}). The first move of the solution is ${solutionMoves[0]}.
-  //       DO not show the themes to the user right away, hide the themes information from the start of the session, ONLY SHOW the themes when requested by the user.`;
-
-  //       return toolContentAdapter(
-  //         {
-  //           lichessId: puzzle.lichessId,
-  //           rating: puzzle.rating,
-  //           difficulty: difficultyLevel,
-  //           themes: puzzle.themes,
-  //           themeDescriptions,
-  //           gameURL: puzzle.gameURL,
-  //           previousFEN: puzzle.previousFEN,
-  //           currentFEN: puzzle.FEN,
-  //           turnToMove,
-  //           opponentLastMove: firstMove,
-  //           solution: solutionMoves,
-  //           firstSolutionMove: solutionMoves[0],
-  //           totalMoves: solutionMoves.length,
-  //           instructions,
-  //         },
-  //         undefined,
-  //       );
-  //     } catch (error) {
-  //       return toolContentAdapter({}, `Error fetching puzzle: ${error instanceof Error ? error.message : String(error)}`);
-  //     }
-  //   },
-  // });
+  postToolAdapter(server, {
+    name: "fetch-chess-puzzle",
+    description:
+      "Fetch a random chess puzzle from the Lichess-backed puzzle service. Can filter by themes and rating range. Use this to start a puzzle session with the user.",
+    endpoint: `${SERVICE_CONFIG_BASE_URL_MAP.SF_BASE_URL}/puzzle/builder`,
+    inputSchema: {
+      themes: z
+        .array(z.string())
+        .optional()
+        .describe("Array of puzzle theme tags to filter by (e.g., ['fork', 'pin', 'mateIn2'])"),
+      ratingFrom: z
+        .number()
+        .min(1000)
+        .optional()
+        .describe("Minimum puzzle rating (e.g., 1000)"),
+      ratingTo: z
+        .number()
+        .max(2500)
+        .optional()
+        .describe("Maximum puzzle rating (e.g., 2000)"),
+    },
+  });
 
   toolAdapter(server, {
     name: "get-lichess-username",
