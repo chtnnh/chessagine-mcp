@@ -79,7 +79,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ### ChessAgine.Skill
 
-to properly use ChessAgine MCP, give LLM access to how to properly use the it via .skill file [here](https://github.com/jalpp/chessagine.skill)
+to properly use ChessAgine MCP, give LLM access to how to properly use the it via .skill file in ./chessagine-skill/ folder
 
 ### Deploy your own instance
 

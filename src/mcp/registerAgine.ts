@@ -7,6 +7,8 @@ import { registerCBMTools } from "./cbmToolRegister.js";
 import { registerChessDBTools } from "./chessDbToolRegister.js";
 import { registerNeuralNetTools } from "./neuralNetToolRegister.js";
 import { registerPosiraTools } from "./posiraToolRegister.js";
+import { registerThemeAnalysisTools } from "./themesToolRegister.js";
+import { registerBoardStateTools } from "./boardToolRegister.js";
 
 
 export function registerAgine(server: McpServer): void {
@@ -15,6 +17,8 @@ export function registerAgine(server: McpServer): void {
     registerCBMTools(server);
     registerStockfishTools(server);
     registerUtilsTools(server);
+    registerThemeAnalysisTools(server);
+    registerBoardStateTools(server);
     registerChessDBTools(server);
     registerNeuralNetTools(server);
     registerPosiraTools(server);
